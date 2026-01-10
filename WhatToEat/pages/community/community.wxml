@@ -1,0 +1,87 @@
+<!-- 社区动态页 -->
+<view class="container">
+  <!-- 动态列表 -->
+  <scroll-view 
+    class="posts-scroll" 
+    scroll-y 
+    refresher-enabled="{{true}}"
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onRefresh"
+    bindscrolltolower="onLoadMore"
+  >
+    <view class="posts-list" wx:if="{{posts.length > 0}}">
+      <view 
+        class="post-item" 
+        wx:for="{{posts}}" 
+        wx:key="id"
+        bindtap="onPostTap"
+        data-post="{{item}}"
+      >
+        <!-- 用户信息 -->
+        <view class="post-header">
+          <image class="user-avatar" src="{{item.userAvatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <view class="user-info">
+            <text class="user-name">{{item.userName || '匿名用户'}}</text>
+            <text class="post-time">{{item.createTime}}</text>
+          </view>
+        </view>
+
+        <!-- 内容 -->
+        <view class="post-content">
+          <text class="post-text">{{item.content}}</text>
+          <view class="post-images" wx:if="{{item.images && item.images.length > 0}}">
+            <image 
+              class="post-image" 
+              wx:for="{{item.images}}" 
+              wx:key="*this"
+              wx:for-item="img"
+              src="{{img}}" 
+              mode="aspectFill"
+              bindtap="previewImage"
+              data-urls="{{item.images}}"
+              data-current="{{img}}"
+            ></image>
+          </view>
+        </view>
+
+        <!-- 操作栏 -->
+        <view class="post-actions">
+          <view class="action-item" bindtap="onLike" data-id="{{item.id}}" data-index="{{index}}">
+            <text class="action-icon">👍</text>
+            <text class="action-count">{{item.likeCount || 0}}</text>
+          </view>
+          <view class="action-item" bindtap="onComment" data-id="{{item.id}}">
+            <text class="action-icon">💬</text>
+            <text class="action-count">{{item.commentCount || 0}}</text>
+          </view>
+          <view class="action-item" bindtap="onShare" data-id="{{item.id}}">
+            <text class="action-icon">🔗</text>
+            <text>分享</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <empty wx:else text="暂无动态，快来发布第一条吧~" show-action="{{true}}">
+      <view slot="action">
+        <button class="btn btn-primary" bindtap="navigateToPublish">发布动态</button>
+      </view>
+    </empty>
+
+    <!-- 加载更多提示 -->
+    <view class="load-more" wx:if="{{hasMore && posts.length > 0}}">
+      <text wx:if="{{loadingMore}}">加载中...</text>
+      <text wx:else>上拉加载更多</text>
+    </view>
+    <view class="load-more" wx:if="{{!hasMore && posts.length > 0}}">
+      <text>没有更多了</text>
+    </view>
+  </scroll-view>
+
+  <!-- 发布按钮 -->
+  <view class="fab" bindtap="navigateToPublish">
+    <text class="fab-icon">+</text>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="加载中..."></loading>

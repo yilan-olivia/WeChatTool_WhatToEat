@@ -1,0 +1,109 @@
+/* 个人中心页样式 */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+/* 用户信息卡片 */
+.user-card {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: var(--spacing-lg) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  margin-right: var(--spacing-md);
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: var(--spacing-xs);
+}
+
+.user-desc {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.user-action {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-icon {
+  font-size: 32rpx;
+  color: #ffffff;
+}
+
+/* 功能菜单 */
+.menu-section {
+  background-color: var(--bg-white);
+  margin-bottom: var(--spacing-md);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-bottom: 1rpx solid var(--border-color);
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-icon {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-right: var(--spacing-md);
+}
+
+.menu-text {
+  flex: 1;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.menu-badge {
+  padding: 4rpx 12rpx;
+  background-color: var(--error-color);
+  color: #ffffff;
+  border-radius: 20rpx;
+  font-size: var(--font-size-xs);
+  margin-right: var(--spacing-sm);
+}
+
+.menu-arrow {
+  font-size: var(--font-size-md);
+  color: var(--text-tertiary);
+}
+
+/* 退出登录 */
+.logout-section {
+  padding: var(--spacing-md);
+}
+
+.logout-btn {
+  width: 100%;
+}

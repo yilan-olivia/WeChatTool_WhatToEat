@@ -1,0 +1,26 @@
+/* 空状态组件样式 */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl, 48rpx);
+  min-height: 400rpx;
+}
+
+.empty-icon {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: var(--spacing-md, 24rpx);
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: var(--font-size-sm, 24rpx);
+  color: var(--text-tertiary, #969799);
+  margin-bottom: var(--spacing-md, 24rpx);
+}
+
+.empty-action {
+  margin-top: var(--spacing-sm, 16rpx);
+}

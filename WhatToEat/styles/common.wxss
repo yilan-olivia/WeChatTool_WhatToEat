@@ -1,0 +1,234 @@
+/**
+ * 公共样式文件
+ * 定义全局样式变量和基础样式
+ */
+
+/* ========== 颜色变量 ========== */
+page {
+  /* 主题色 */
+  --primary-color: #07c160; /* 微信绿色 */
+  --primary-light: #38d17a;
+  --primary-dark: #06ad56;
+  
+  /* 辅助色 */
+  --success-color: #07c160;
+  --warning-color: #ff976a;
+  --error-color: #ee0a24;
+  --info-color: #1989fa;
+  
+  /* 文字颜色 */
+  --text-primary: #323233;
+  --text-secondary: #646566;
+  --text-tertiary: #969799;
+  --text-disabled: #c8c9cc;
+  
+  /* 背景色 */
+  --bg-color: #f7f8fa;
+  --bg-white: #ffffff;
+  --bg-gray: #f2f3f5;
+  
+  /* 边框颜色 */
+  --border-color: #ebedf0;
+  --border-radius: 8rpx;
+  
+  /* 间距 */
+  --spacing-xs: 8rpx;
+  --spacing-sm: 16rpx;
+  --spacing-md: 24rpx;
+  --spacing-lg: 32rpx;
+  --spacing-xl: 48rpx;
+  
+  /* 字体大小 */
+  --font-size-xs: 20rpx;
+  --font-size-sm: 24rpx;
+  --font-size-md: 28rpx;
+  --font-size-lg: 32rpx;
+  --font-size-xl: 36rpx;
+  
+  /* 阴影 */
+  --box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+/* ========== 基础样式重置 ========== */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  background-color: var(--bg-color);
+  line-height: 1.6;
+}
+
+/* 容器 */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+/* ========== 通用工具类 ========== */
+
+/* 布局 */
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* 间距 */
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+
+.ml-xs { margin-left: var(--spacing-xs); }
+.ml-sm { margin-left: var(--spacing-sm); }
+.ml-md { margin-left: var(--spacing-md); }
+
+.mr-xs { margin-right: var(--spacing-xs); }
+.mr-sm { margin-right: var(--spacing-sm); }
+.mr-md { margin-right: var(--spacing-md); }
+
+.pt-xs { padding-top: var(--spacing-xs); }
+.pt-sm { padding-top: var(--spacing-sm); }
+.pt-md { padding-top: var(--spacing-md); }
+
+.pb-xs { padding-bottom: var(--spacing-xs); }
+.pb-sm { padding-bottom: var(--spacing-sm); }
+.pb-md { padding-bottom: var(--spacing-md); }
+
+.pl-sm { padding-left: var(--spacing-sm); }
+.pl-md { padding-left: var(--spacing-md); }
+
+.pr-sm { padding-right: var(--spacing-sm); }
+.pr-md { padding-right: var(--spacing-md); }
+
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+
+/* 文字 */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-md { font-size: var(--font-size-md); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+
+.text-bold { font-weight: bold; }
+
+/* 背景 */
+.bg-white { background-color: var(--bg-white); }
+.bg-gray { background-color: var(--bg-gray); }
+
+/* 边框 */
+.border { border: 1rpx solid var(--border-color); }
+.border-top { border-top: 1rpx solid var(--border-color); }
+.border-bottom { border-bottom: 1rpx solid var(--border-color); }
+
+.rounded { border-radius: var(--border-radius); }
+
+/* 阴影 */
+.shadow { box-shadow: var(--box-shadow); }
+
+/* 隐藏 */
+.hidden { display: none; }
+
+/* 溢出处理 */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ========== 卡片样式 ========== */
+.card {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin: var(--spacing-sm) var(--spacing-md);
+  box-shadow: var(--box-shadow);
+}
+
+/* ========== 按钮样式 ========== */
+.btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  text-align: center;
+  font-size: var(--font-size-md);
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.btn-primary:active {
+  background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+  background-color: var(--bg-gray);
+  color: var(--text-primary);
+}
+
+/* ========== 空状态样式 ========== */
+.empty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+.empty-icon {
+  width: 200rpx;
+  height: 200rpx;
+  margin: 0 auto var(--spacing-md);
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}

@@ -1,0 +1,24 @@
+/**
+ * 云开发环境配置
+ * 请在小程序后台创建云开发环境后，将环境ID填写到 cloudEnvId 中
+ */
+export const cloudEnvId = ''; // 云开发环境ID，需要在小程序后台获取
+
+/**
+ * 云开发环境配置对象
+ */
+export const cloudConfig = {
+  env: cloudEnvId,
+  traceUser: true, // 是否在将用户访问记录到用户管理中
+};
+
+/**
+ * 数据库集合名称配置
+ */
+export const dbCollections = {
+  users: 'users', // 用户信息集合
+  foods: 'foods', // 菜品信息集合
+  recipes: 'recipes', // 食谱集合
+  community: 'community', // 社区动态集合
+  reports: 'reports', // 健康报告集合
+};

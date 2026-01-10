@@ -1,0 +1,100 @@
+<!-- 食谱生成页 -->
+<view class="container">
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <view class="section-title">选择可用菜品</view>
+    <view class="foods-selector">
+      <view 
+        class="food-tag {{selectedFoods.includes(item.id) ? 'active' : ''}}"
+        wx:for="{{availableFoods}}" 
+        wx:key="id"
+        bindtap="toggleFood"
+        data-id="{{item.id}}"
+      >
+        {{item.name}}
+      </view>
+    </view>
+    <view class="tips" wx:if="{{selectedFoods.length === 0}}">
+      请至少选择一个菜品
+    </view>
+  </view>
+
+  <!-- 偏好设置 -->
+  <view class="preference-section">
+    <view class="section-title">口味偏好</view>
+    <view class="preference-list">
+      <view 
+        class="preference-item {{preference === item ? 'active' : ''}}"
+        wx:for="{{preferences}}" 
+        wx:key="*this"
+        bindtap="selectPreference"
+        data-preference="{{item}}"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 生成按钮 -->
+  <view class="action-section">
+    <button 
+      class="btn btn-primary generate-btn" 
+      bindtap="generateRecipe"
+      disabled="{{selectedFoods.length === 0 || generating}}"
+    >
+      {{generating ? '生成中...' : '生成食谱'}}
+    </button>
+  </view>
+
+  <!-- 生成的食谱 -->
+  <view class="recipe-section" wx:if="{{generatedRecipe}}">
+    <view class="section-title">生成的食谱</view>
+    <view class="recipe-card">
+      <view class="recipe-name">{{generatedRecipe.name}}</view>
+      <view class="recipe-info">
+        <text class="info-item">难度：{{generatedRecipe.difficulty || '简单'}}</text>
+        <text class="info-item">时间：{{generatedRecipe.time || '30分钟'}}</text>
+        <text class="info-item">热量：{{generatedRecipe.calories || '--'}} 卡</text>
+      </view>
+      
+      <!-- 食材清单 -->
+      <view class="recipe-section-item" wx:if="{{generatedRecipe.ingredients}}">
+        <view class="item-title">食材清单</view>
+        <view class="ingredients-list">
+          <text 
+            class="ingredient-item"
+            wx:for="{{generatedRecipe.ingredients}}" 
+            wx:key="*this"
+          >
+            {{item}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 制作步骤 -->
+      <view class="recipe-section-item" wx:if="{{generatedRecipe.steps}}">
+        <view class="item-title">制作步骤</view>
+        <view class="steps-list">
+          <view 
+            class="step-item"
+            wx:for="{{generatedRecipe.steps}}" 
+            wx:key="index"
+            wx:for-index="idx"
+          >
+            <view class="step-number">{{idx + 1}}</view>
+            <view class="step-content">{{item}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="recipe-actions">
+        <button class="btn btn-secondary" bindtap="saveRecipe">保存食谱</button>
+        <button class="btn btn-primary" bindtap="shareRecipe">分享</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="{{loadingText}}"></loading>

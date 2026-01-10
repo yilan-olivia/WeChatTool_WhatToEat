@@ -1,0 +1,80 @@
+/* 菜品卡片组件样式 */
+.food-card {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: var(--border-radius, 8rpx);
+  margin-bottom: var(--spacing-sm, 16rpx);
+  overflow: hidden;
+  box-shadow: var(--box-shadow, 0 2rpx 12rpx rgba(0, 0, 0, 0.1));
+}
+
+.food-image-wrapper {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  flex-shrink: 0;
+}
+
+.food-image {
+  width: 100%;
+  height: 100%;
+}
+
+.food-badge {
+  position: absolute;
+  top: 8rpx;
+  left: 8rpx;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.food-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--spacing-md, 24rpx);
+}
+
+.food-name {
+  font-size: var(--font-size-lg, 32rpx);
+  font-weight: bold;
+  color: var(--text-primary, #323233);
+  margin-bottom: var(--spacing-sm, 16rpx);
+}
+
+.food-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-sm, 24rpx);
+  color: var(--text-secondary, #646566);
+}
+
+.food-date {
+  flex: 1;
+}
+
+.food-status {
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+  font-size: 20rpx;
+}
+
+.food-status.fresh {
+  background-color: #e8f5e9;
+  color: #07c160;
+}
+
+.food-status.warning {
+  background-color: #fff3e0;
+  color: #ff976a;
+}
+
+.food-status.expired {
+  background-color: #ffebee;
+  color: #ee0a24;
+}

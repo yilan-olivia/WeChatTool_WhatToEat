@@ -1,0 +1,84 @@
+<!-- 健康报告页 -->
+<view class="container">
+  <!-- 时间选择 -->
+  <view class="time-selector">
+    <picker mode="date" value="{{startDate}}" start="{{minDate}}" end="{{maxDate}}" bindchange="onStartDateChange">
+      <view class="date-item">
+        <text class="date-label">开始日期</text>
+        <text class="date-value">{{startDate}}</text>
+      </view>
+    </picker>
+    <text class="date-separator">至</text>
+    <picker mode="date" value="{{endDate}}" start="{{startDate}}" end="{{maxDate}}" bindchange="onEndDateChange">
+      <view class="date-item">
+        <text class="date-label">结束日期</text>
+        <text class="date-value">{{endDate}}</text>
+      </view>
+    </picker>
+    <button class="btn btn-primary query-btn" bindtap="queryReport">查询</button>
+  </view>
+
+  <!-- 统计概览 -->
+  <view class="stats-overview" wx:if="{{reportData}}">
+    <view class="overview-title">统计概览</view>
+    <view class="stats-grid">
+      <view class="stat-box">
+        <text class="stat-value">{{reportData.totalFoods || 0}}</text>
+        <text class="stat-label">菜品总数</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value">{{reportData.totalRecipes || 0}}</text>
+        <text class="stat-label">生成食谱</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value">{{reportData.avgCalories || 0}}</text>
+        <text class="stat-label">平均热量</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-value">{{reportData.wasteCount || 0}}</text>
+        <text class="stat-label">浪费数量</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类统计 -->
+  <view class="category-stats" wx:if="{{reportData && reportData.categoryStats}}">
+    <view class="section-title">分类统计</view>
+    <view class="category-list">
+      <view 
+        class="category-stat-item"
+        wx:for="{{reportData.categoryStats}}" 
+        wx:key="category"
+      >
+        <view class="category-info">
+          <text class="category-name">{{item.category}}</text>
+          <text class="category-count">{{item.count}}个</text>
+        </view>
+        <view class="category-bar">
+          <view class="category-progress" style="width: {{item.percentage}}%"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 健康建议 -->
+  <view class="health-tips" wx:if="{{reportData && reportData.tips}}">
+    <view class="section-title">健康建议</view>
+    <view class="tips-list">
+      <view 
+        class="tip-item"
+        wx:for="{{reportData.tips}}" 
+        wx:key="index"
+      >
+        <text class="tip-icon">💡</text>
+        <text class="tip-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <empty wx:if="{{!reportData && !loading}}" text="暂无数据，请选择日期范围查询"></empty>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="生成报告中..."></loading>

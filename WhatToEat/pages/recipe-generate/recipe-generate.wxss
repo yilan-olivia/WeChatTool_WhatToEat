@@ -1,0 +1,188 @@
+/* 食谱生成页样式 */
+.container {
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  background-color: var(--bg-color);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+/* 输入区域 */
+.input-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.foods-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.food-tag {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: 32rpx;
+  background-color: var(--bg-gray);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  border: 2rpx solid transparent;
+}
+
+.food-tag.active {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}
+
+.tips {
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* 偏好设置 */
+.preference-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.preference-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.preference-item {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: 32rpx;
+  background-color: var(--bg-gray);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  border: 2rpx solid transparent;
+}
+
+.preference-item.active {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}
+
+/* 操作按钮 */
+.action-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.generate-btn {
+  width: 100%;
+}
+
+/* 食谱区域 */
+.recipe-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+}
+
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-name {
+  font-size: var(--font-size-xl);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.recipe-info {
+  display: flex;
+  justify-content: space-around;
+  padding: var(--spacing-md) 0;
+  border-top: 1rpx solid var(--border-color);
+  border-bottom: 1rpx solid var(--border-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.info-item {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.recipe-section-item {
+  margin-bottom: var(--spacing-lg);
+}
+
+.item-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.ingredients-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.ingredient-item {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: var(--bg-gray);
+  border-radius: 32rpx;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 48rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+}
+
+.step-content {
+  flex: 1;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.recipe-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.recipe-actions .btn {
+  flex: 1;
+}

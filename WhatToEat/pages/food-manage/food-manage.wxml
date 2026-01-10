@@ -1,0 +1,71 @@
+<!-- 菜品管理页 -->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input 
+      class="search-input" 
+      placeholder="搜索菜品名称..." 
+      value="{{searchKeyword}}"
+      bindinput="onSearchInput"
+      confirm-type="search"
+      bindconfirm="onSearch"
+    />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view class="category-scroll" scroll-x>
+    <view class="category-list">
+      <view 
+        class="category-item {{currentCategory === item ? 'active' : ''}}"
+        wx:for="{{categories}}" 
+        wx:key="*this"
+        bindtap="onCategoryChange"
+        data-category="{{item}}"
+      >
+        {{item}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 菜品列表 -->
+  <scroll-view 
+    class="foods-scroll" 
+    scroll-y 
+    refresher-enabled="{{true}}"
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onRefresh"
+    bindscrolltolower="onLoadMore"
+  >
+    <view class="foods-list" wx:if="{{foods.length > 0}}">
+      <food-card 
+        wx:for="{{foods}}" 
+        wx:key="id" 
+        food="{{item}}"
+        bindtap="onFoodTap"
+      ></food-card>
+    </view>
+    <empty wx:else text="暂无菜品" show-action="{{true}}">
+      <view slot="action">
+        <button class="btn btn-primary" bindtap="navigateToCameraScan">添加菜品</button>
+      </view>
+    </empty>
+    
+    <!-- 加载更多提示 -->
+    <view class="load-more" wx:if="{{hasMore && foods.length > 0}}">
+      <text wx:if="{{loadingMore}}">加载中...</text>
+      <text wx:else>上拉加载更多</text>
+    </view>
+    <view class="load-more" wx:if="{{!hasMore && foods.length > 0}}">
+      <text>没有更多了</text>
+    </view>
+  </scroll-view>
+
+  <!-- 添加按钮 -->
+  <view class="fab" bindtap="navigateToCameraScan">
+    <text class="fab-icon">+</text>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="加载中..."></loading>

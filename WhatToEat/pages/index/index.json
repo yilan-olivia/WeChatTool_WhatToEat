@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "首页",
+  "usingComponents": {
+    "loading": "../../components/loading/loading",
+    "empty": "../../components/empty/empty",
+    "food-card": "../../components/food-card/food-card"
+  }
+}

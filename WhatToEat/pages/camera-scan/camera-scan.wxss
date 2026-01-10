@@ -1,0 +1,166 @@
+/* 拍照识别页样式 */
+.container {
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  background-color: var(--bg-color);
+}
+
+/* 预览区域 */
+.preview-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-md);
+  overflow: hidden;
+}
+
+.preview-wrapper {
+  position: relative;
+  width: 100%;
+  height: 500rpx;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+}
+
+.preview-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.preview-wrapper:active .preview-mask {
+  opacity: 1;
+}
+
+.mask-text {
+  color: #ffffff;
+  font-size: var(--font-size-md);
+}
+
+.preview-placeholder {
+  height: 500rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+}
+
+.placeholder-icon {
+  font-size: 120rpx;
+  margin-bottom: var(--spacing-sm);
+}
+
+.placeholder-text {
+  font-size: var(--font-size-sm);
+}
+
+/* 识别结果 */
+.result-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.result-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+.result-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+}
+
+.result-label {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  margin-right: var(--spacing-sm);
+}
+
+.result-value {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+/* 操作按钮 */
+.action-section {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.action-section .btn {
+  flex: 1;
+}
+
+/* 表单区域 */
+.form-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+}
+
+.form-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+.form-item {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+  display: block;
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 var(--spacing-md);
+  background-color: var(--bg-gray);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 200rpx;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--bg-gray);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.save-btn {
+  width: 100%;
+  margin-top: var(--spacing-md);
+}

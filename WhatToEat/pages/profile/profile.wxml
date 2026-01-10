@@ -1,0 +1,58 @@
+<!-- 个人中心页 -->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickName || '未登录'}}</text>
+      <text class="user-desc" wx:if="{{userInfo.nickName}}">点击完善个人信息</text>
+      <text class="user-desc" wx:else>点击登录</text>
+    </view>
+    <view class="user-action" bindtap="onUserInfoTap">
+      <text class="action-icon">></text>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-item" bindtap="navigateToFoodManage">
+      <view class="menu-icon">📝</view>
+      <text class="menu-text">我的菜品</text>
+      <text class="menu-badge" wx:if="{{foodCount > 0}}">{{foodCount}}</text>
+      <text class="menu-arrow">></text>
+    </view>
+    <view class="menu-item" bindtap="navigateToRecipes">
+      <view class="menu-icon">🍳</view>
+      <text class="menu-text">我的食谱</text>
+      <text class="menu-badge" wx:if="{{recipeCount > 0}}">{{recipeCount}}</text>
+      <text class="menu-arrow">></text>
+    </view>
+    <view class="menu-item" bindtap="navigateToReport">
+      <view class="menu-icon">📊</view>
+      <text class="menu-text">健康报告</text>
+      <text class="menu-arrow">></text>
+    </view>
+  </view>
+
+  <!-- 设置菜单 -->
+  <view class="menu-section">
+    <view class="menu-item" bindtap="onSettingsTap">
+      <view class="menu-icon">⚙️</view>
+      <text class="menu-text">设置</text>
+      <text class="menu-arrow">></text>
+    </view>
+    <view class="menu-item" bindtap="onAboutTap">
+      <view class="menu-icon">ℹ️</view>
+      <text class="menu-text">关于我们</text>
+      <text class="menu-arrow">></text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" wx:if="{{isLogin}}">
+    <button class="btn btn-secondary logout-btn" bindtap="onLogout">退出登录</button>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="加载中..."></loading>

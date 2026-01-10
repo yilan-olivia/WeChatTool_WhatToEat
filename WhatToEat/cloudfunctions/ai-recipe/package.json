@@ -1,0 +1,9 @@
+{
+  "name": "ai-recipe",
+  "version": "1.0.0",
+  "description": "AI食谱生成云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

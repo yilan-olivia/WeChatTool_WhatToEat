@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "拍照识别",
+  "usingComponents": {
+    "loading": "../../components/loading/loading"
+  }
+}

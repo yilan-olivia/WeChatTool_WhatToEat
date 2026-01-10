@@ -1,0 +1,22 @@
+/**
+ * 全局样式文件
+ * 引入公共样式
+ */
+
+@import './styles/common.wxss';
+
+/* 全局重置 */
+* {
+  box-sizing: border-box;
+}
+
+/* 页面容器 */
+page {
+  height: 100%;
+  background-color: var(--bg-color);
+}
+
+/* 滚动容器 */
+.scroll-view {
+  height: 100%;
+}

@@ -1,0 +1,14 @@
+<!-- 菜品卡片组件 -->
+<view class="food-card" bindtap="onCardTap">
+  <view class="food-image-wrapper">
+    <image class="food-image" src="{{food.image || '/images/default-food.png'}}" mode="aspectFill"></image>
+    <view class="food-badge" wx:if="{{food.category}}">{{food.category}}</view>
+  </view>
+  <view class="food-info">
+    <view class="food-name">{{food.name || '未知菜品'}}</view>
+    <view class="food-meta">
+      <text class="food-date" wx:if="{{food.expireDate}}">保质期：{{food.expireDate}}</text>
+      <text class="food-status {{food.status}}" wx:if="{{food.status}}">{{statusText}}</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,104 @@
+/* 首页样式 */
+.container {
+  padding-bottom: var(--spacing-lg);
+}
+
+/* 统计卡片区域 */
+.stats-section {
+  display: flex;
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+  background-color: var(--bg-white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.stats-card {
+  flex: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  text-align: center;
+  color: #ffffff;
+}
+
+.stats-card.warning {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stats-number {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: var(--spacing-xs);
+}
+
+.stats-label {
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+}
+
+/* 快捷功能区域 */
+.quick-actions {
+  background-color: var(--bg-white);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background-color: var(--bg-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  margin-bottom: var(--spacing-xs);
+}
+
+.action-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* 最近添加区域 */
+.recent-foods {
+  background-color: var(--bg-white);
+  padding: var(--spacing-md);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.section-more {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+.foods-list {
+  display: flex;
+  flex-direction: column;
+}

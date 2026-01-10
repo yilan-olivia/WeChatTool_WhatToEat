@@ -1,0 +1,65 @@
+<!-- 首页/仪表板 -->
+<view class="container">
+  <!-- 顶部统计卡片 -->
+  <view class="stats-section">
+    <view class="stats-card" bindtap="navigateToFoodManage">
+      <view class="stats-number">{{foodCount}}</view>
+      <view class="stats-label">菜品总数</view>
+    </view>
+    <view class="stats-card" bindtap="navigateToReport">
+      <view class="stats-number">{{recipeCount}}</view>
+      <view class="stats-label">生成食谱</view>
+    </view>
+    <view class="stats-card warning" bindtap="navigateToFoodManage">
+      <view class="stats-number">{{expiringCount}}</view>
+      <view class="stats-label">即将过期</view>
+    </view>
+  </view>
+
+  <!-- 快捷功能入口 -->
+  <view class="quick-actions">
+    <view class="section-title">快捷功能</view>
+    <view class="actions-grid">
+      <view class="action-item" bindtap="navigateToCameraScan">
+        <view class="action-icon camera">📷</view>
+        <text class="action-text">拍照识别</text>
+      </view>
+      <view class="action-item" bindtap="navigateToRecipeGenerate">
+        <view class="action-icon recipe">🍳</view>
+        <text class="action-text">生成食谱</text>
+      </view>
+      <view class="action-item" bindtap="navigateToFoodManage">
+        <view class="action-icon manage">📝</view>
+        <text class="action-text">菜品管理</text>
+      </view>
+      <view class="action-item" bindtap="navigateToCommunity">
+        <view class="action-icon community">👥</view>
+        <text class="action-text">社区动态</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近添加的菜品 -->
+  <view class="recent-foods">
+    <view class="section-header">
+      <text class="section-title">最近添加</text>
+      <text class="section-more" bindtap="navigateToFoodManage">查看更多 ></text>
+    </view>
+    <view class="foods-list" wx:if="{{recentFoods.length > 0}}">
+      <food-card 
+        wx:for="{{recentFoods}}" 
+        wx:key="id" 
+        food="{{item}}"
+        bindtap="onFoodTap"
+      ></food-card>
+    </view>
+    <empty wx:else text="暂无菜品，快去添加吧~" show-action="{{true}}">
+      <view slot="action">
+        <button class="btn btn-primary" bindtap="navigateToCameraScan">添加菜品</button>
+      </view>
+    </empty>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="加载中..."></loading>

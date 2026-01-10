@@ -1,0 +1,136 @@
+/* 社区动态页样式 */
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+}
+
+.posts-scroll {
+  flex: 1;
+  height: 0;
+}
+
+.posts-list {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.post-item {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--box-shadow);
+}
+
+/* 用户信息 */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.user-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: var(--spacing-sm);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.user-name {
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.post-time {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+/* 内容 */
+.post-content {
+  margin-bottom: var(--spacing-md);
+}
+
+.post-text {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+
+.post-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.post-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: var(--border-radius);
+}
+
+/* 操作栏 */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+  border-top: 1rpx solid var(--border-color);
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.action-icon {
+  font-size: 32rpx;
+}
+
+.action-count {
+  font-size: var(--font-size-sm);
+}
+
+.load-more {
+  text-align: center;
+  padding: var(--spacing-md);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+/* 悬浮发布按钮 */
+.fab {
+  position: fixed;
+  right: var(--spacing-md);
+  bottom: 120rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.4);
+  z-index: 100;
+}
+
+.fab-icon {
+  color: #ffffff;
+  font-size: 48rpx;
+  font-weight: bold;
+  line-height: 1;
+}

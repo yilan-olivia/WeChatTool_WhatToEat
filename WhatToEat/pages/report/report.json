@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "健康报告",
+  "usingComponents": {
+    "loading": "../../components/loading/loading",
+    "empty": "../../components/empty/empty"
+  }
+}
