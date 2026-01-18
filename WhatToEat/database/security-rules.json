@@ -1,0 +1,37 @@
+{
+  "food_items": {
+    "read": "doc.userId == auth.openid && doc.isDeleted == false",
+    "write": "doc.userId == auth.openid",
+    "create": "request.data.userId == auth.openid && request.data.isDeleted == false",
+    "update": "doc.userId == auth.openid",
+    "delete": false
+  },
+  "users": {
+    "read": "doc._id == auth.openid",
+    "write": "doc._id == auth.openid",
+    "create": "request.data._id == auth.openid",
+    "update": "doc._id == auth.openid && request.data._id == auth.openid",
+    "delete": false
+  },
+  "recipes": {
+    "read": "(doc.userId == auth.openid || doc.isPublic == true) && doc.isDeleted == false",
+    "write": "doc.userId == auth.openid",
+    "create": "request.data.userId == auth.openid && request.data.isDeleted == false",
+    "update": "doc.userId == auth.openid",
+    "delete": false
+  },
+  "community_posts": {
+    "read": "doc.isDeleted == false",
+    "write": "doc.userId == auth.openid",
+    "create": "request.data.userId == auth.openid && request.data.isDeleted == false",
+    "update": "doc.userId == auth.openid",
+    "delete": false
+  },
+  "health_reports": {
+    "read": "doc.userId == auth.openid && doc.isDeleted == false",
+    "write": "doc.userId == auth.openid",
+    "create": "request.data.userId == auth.openid && request.data.isDeleted == false",
+    "update": "doc.userId == auth.openid",
+    "delete": false
+  }
+}

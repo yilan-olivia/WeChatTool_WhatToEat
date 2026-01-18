@@ -1,0 +1,17 @@
+<!-- 图片懒加载组件 -->
+<view class="lazy-image-container">
+  <image 
+    class="lazy-image {{loaded ? 'loaded' : ''}}"
+    src="{{loaded ? src : placeholder}}"
+    mode="{{mode}}"
+    lazy-load="{{true}}"
+    bindload="onImageLoad"
+    binderror="onImageError"
+  ></image>
+  <view class="lazy-loading" wx:if="{{!loaded && !error}}">
+    <view class="loading-spinner"></view>
+  </view>
+  <view class="lazy-error" wx:if="{{error}}">
+    <text class="error-text">{{errorText}}</text>
+  </view>
+</view>

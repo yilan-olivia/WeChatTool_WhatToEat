@@ -1,6 +1,8 @@
 {
   "navigationBarTitleText": "生成食谱",
   "usingComponents": {
-    "loading": "../../components/loading/loading"
+    "loading": "../../components/loading/loading",
+    "recipe-card": "../../components/recipe-card/recipe-card",
+    "nutrition-bar": "../../components/nutrition-bar/nutrition-bar"
   }
 }

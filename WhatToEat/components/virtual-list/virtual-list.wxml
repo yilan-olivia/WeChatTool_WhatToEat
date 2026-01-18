@@ -1,0 +1,20 @@
+<!-- 虚拟列表组件 -->
+<scroll-view 
+  class="virtual-list"
+  scroll-y="{{true}}"
+  scroll-top="{{scrollTop}}"
+  scroll-with-animation="{{true}}"
+  bindscroll="onScroll"
+  style="height: {{height}}rpx;"
+>
+  <view class="virtual-list-container" style="height: {{totalHeight}}rpx;">
+    <view 
+      class="virtual-list-item"
+      wx:for="{{visibleItems}}"
+      wx:key="{{itemKey}}"
+      style="position: absolute; top: {{item.top}}rpx; left: 0; right: 0;"
+    >
+      <slot name="item" item="{{item.data}}" index="{{item.index}}"></slot>
+    </view>
+  </view>
+</scroll-view>

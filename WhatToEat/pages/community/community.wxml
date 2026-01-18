@@ -67,14 +67,13 @@
       </view>
     </empty>
 
-    <!-- 加载更多提示 -->
-    <view class="load-more" wx:if="{{hasMore && posts.length > 0}}">
-      <text wx:if="{{loadingMore}}">加载中...</text>
-      <text wx:else>上拉加载更多</text>
-    </view>
-    <view class="load-more" wx:if="{{!hasMore && posts.length > 0}}">
-      <text>没有更多了</text>
-    </view>
+    <!-- 加载更多组件 -->
+    <loading-more 
+      show="{{posts.length > 0}}"
+      loading="{{loadingMore}}"
+      loading-text="加载中..."
+      no-more-text="没有更多了"
+    ></loading-more>
   </scroll-view>
 
   <!-- 发布按钮 -->

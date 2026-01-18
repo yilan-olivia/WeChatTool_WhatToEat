@@ -15,6 +15,7 @@ Page({
     minDate: '', // 最小日期
     maxDate: '', // 最大日期
     reportData: null, // 报告数据
+    categoryNutritionData: [], // 分类营养数据（用于nutrition-bar组件）
   },
 
   /**
@@ -84,6 +85,15 @@ Page({
       // 生成健康建议
       const tips = this.generateHealthTips(foods, recipes, categoryStats);
 
+      // 转换分类统计数据为nutrition-bar组件需要的格式
+      const categoryNutritionData = categoryStats.map(item => ({
+        name: item.category,
+        type: item.category,
+        value: item.count,
+        unit: '个',
+        percentage: item.percentage,
+      }));
+
       this.setData({
         reportData: {
           totalFoods: foods.length,
@@ -93,6 +103,7 @@ Page({
           categoryStats,
           tips,
         },
+        categoryNutritionData: categoryNutritionData,
       });
     } catch (err) {
       console.error('查询报告失败:', err);

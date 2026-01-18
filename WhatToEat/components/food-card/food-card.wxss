@@ -1,11 +1,29 @@
 /* 菜品卡片组件样式 */
 .food-card {
   display: flex;
-  background-color: #ffffff;
+  background-color: var(--bg-white, #ffffff);
   border-radius: var(--border-radius, 8rpx);
   margin-bottom: var(--spacing-sm, 16rpx);
   overflow: hidden;
   box-shadow: var(--box-shadow, 0 2rpx 12rpx rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.food-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.15);
 }
 
 .food-image-wrapper {
@@ -18,6 +36,11 @@
 .food-image {
   width: 100%;
   height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.food-card:active .food-image {
+  transform: scale(1.05);
 }
 
 .food-badge {

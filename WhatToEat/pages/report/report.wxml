@@ -44,21 +44,10 @@
   <!-- 分类统计 -->
   <view class="category-stats" wx:if="{{reportData && reportData.categoryStats}}">
     <view class="section-title">分类统计</view>
-    <view class="category-list">
-      <view 
-        class="category-stat-item"
-        wx:for="{{reportData.categoryStats}}" 
-        wx:key="category"
-      >
-        <view class="category-info">
-          <text class="category-name">{{item.category}}</text>
-          <text class="category-count">{{item.count}}个</text>
-        </view>
-        <view class="category-bar">
-          <view class="category-progress" style="width: {{item.percentage}}%"></view>
-        </view>
-      </view>
-    </view>
+    <nutrition-bar 
+      nutrition-data="{{categoryNutritionData}}" 
+      show-percentage="{{true}}"
+    ></nutrition-bar>
   </view>
 
   <!-- 健康建议 -->

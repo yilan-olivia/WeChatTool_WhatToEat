@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "首页",
+  "enablePullDownRefresh": true,
   "usingComponents": {
     "loading": "../../components/loading/loading",
     "empty": "../../components/empty/empty",

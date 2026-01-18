@@ -1,0 +1,77 @@
+/* 营养进度条组件样式 */
+.nutrition-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 24rpx);
+}
+
+.nutrition-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs, 8rpx);
+}
+
+.nutrition-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nutrition-name {
+  font-size: var(--font-size-md, 28rpx);
+  color: var(--text-primary, #323233);
+  font-weight: 500;
+}
+
+.nutrition-value {
+  font-size: var(--font-size-sm, 24rpx);
+  color: var(--text-secondary, #646566);
+}
+
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 16rpx);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8rpx;
+  background-color: var(--bg-gray, #f2f3f5);
+  border-radius: 4rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.default {
+  background-color: var(--primary-color, #07c160);
+}
+
+.progress-fill.protein {
+  background-color: #1989fa;
+}
+
+.progress-fill.fat {
+  background-color: #ff976a;
+}
+
+.progress-fill.carbs {
+  background-color: #ffd21e;
+}
+
+.progress-fill.calories {
+  background-color: #ee0a24;
+}
+
+.nutrition-percentage {
+  font-size: var(--font-size-xs, 20rpx);
+  color: var(--text-tertiary, #969799);
+  min-width: 60rpx;
+  text-align: right;
+}

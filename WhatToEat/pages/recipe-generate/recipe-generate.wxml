@@ -49,49 +49,36 @@
   <!-- 生成的食谱 -->
   <view class="recipe-section" wx:if="{{generatedRecipe}}">
     <view class="section-title">生成的食谱</view>
-    <view class="recipe-card">
-      <view class="recipe-name">{{generatedRecipe.name}}</view>
-      <view class="recipe-info">
-        <text class="info-item">难度：{{generatedRecipe.difficulty || '简单'}}</text>
-        <text class="info-item">时间：{{generatedRecipe.time || '30分钟'}}</text>
-        <text class="info-item">热量：{{generatedRecipe.calories || '--'}} 卡</text>
-      </view>
-      
-      <!-- 食材清单 -->
-      <view class="recipe-section-item" wx:if="{{generatedRecipe.ingredients}}">
-        <view class="item-title">食材清单</view>
-        <view class="ingredients-list">
-          <text 
-            class="ingredient-item"
-            wx:for="{{generatedRecipe.ingredients}}" 
-            wx:key="*this"
-          >
-            {{item}}
-          </text>
+    
+    <!-- 使用recipe-card组件 -->
+    <recipe-card recipe="{{generatedRecipe}}" bindtap="onRecipeTap"></recipe-card>
+    
+    <!-- 营养信息 -->
+    <view class="nutrition-section" wx:if="{{nutritionData.length > 0}}">
+      <view class="section-title">营养信息</view>
+      <nutrition-bar nutrition-data="{{nutritionData}}" show-percentage="{{true}}"></nutrition-bar>
+    </view>
+    
+    <!-- 制作步骤 -->
+    <view class="steps-section" wx:if="{{generatedRecipe.steps}}">
+      <view class="section-title">制作步骤</view>
+      <view class="steps-list">
+        <view 
+          class="step-item"
+          wx:for="{{generatedRecipe.steps}}" 
+          wx:key="index"
+          wx:for-index="idx"
+        >
+          <view class="step-number">{{idx + 1}}</view>
+          <view class="step-content">{{item}}</view>
         </view>
       </view>
+    </view>
 
-      <!-- 制作步骤 -->
-      <view class="recipe-section-item" wx:if="{{generatedRecipe.steps}}">
-        <view class="item-title">制作步骤</view>
-        <view class="steps-list">
-          <view 
-            class="step-item"
-            wx:for="{{generatedRecipe.steps}}" 
-            wx:key="index"
-            wx:for-index="idx"
-          >
-            <view class="step-number">{{idx + 1}}</view>
-            <view class="step-content">{{item}}</view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 操作按钮 -->
-      <view class="recipe-actions">
-        <button class="btn btn-secondary" bindtap="saveRecipe">保存食谱</button>
-        <button class="btn btn-primary" bindtap="shareRecipe">分享</button>
-      </view>
+    <!-- 操作按钮 -->
+    <view class="recipe-actions">
+      <button class="btn btn-secondary" bindtap="saveRecipe">保存食谱</button>
+      <button class="btn btn-primary" bindtap="shareRecipe">分享</button>
     </view>
   </view>
 </view>

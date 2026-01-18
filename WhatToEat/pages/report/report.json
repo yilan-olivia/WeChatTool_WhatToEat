@@ -2,6 +2,7 @@
   "navigationBarTitleText": "健康报告",
   "usingComponents": {
     "loading": "../../components/loading/loading",
-    "empty": "../../components/empty/empty"
+    "empty": "../../components/empty/empty",
+    "nutrition-bar": "../../components/nutrition-bar/nutrition-bar"
   }
 }

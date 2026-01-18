@@ -2,6 +2,7 @@
   "appid": "wx6d78115373c5f724",
   "compileType": "miniprogram",
   "libVersion": "3.13.1",
+  "cloudfunctionRoot": "cloudfunctions/",
   "packOptions": {
     "ignore": [],
     "include": []

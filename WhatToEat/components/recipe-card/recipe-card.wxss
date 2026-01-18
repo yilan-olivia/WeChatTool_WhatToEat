@@ -1,0 +1,98 @@
+/* 食谱卡片组件样式 */
+.recipe-card {
+  background-color: var(--bg-white, #ffffff);
+  border-radius: var(--border-radius, 8rpx);
+  padding: var(--spacing-md, 24rpx);
+  margin-bottom: var(--spacing-sm, 16rpx);
+  box-shadow: var(--box-shadow, 0 2rpx 12rpx rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
+}
+
+.recipe-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.15);
+}
+
+.recipe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm, 16rpx);
+}
+
+.recipe-title {
+  flex: 1;
+  font-size: var(--font-size-lg, 32rpx);
+  font-weight: bold;
+  color: var(--text-primary, #323233);
+  margin-right: var(--spacing-sm, 16rpx);
+}
+
+.recipe-badge {
+  padding: 4rpx 12rpx;
+  background-color: var(--primary-color, #07c160);
+  color: #ffffff;
+  border-radius: 4rpx;
+  font-size: var(--font-size-xs, 20rpx);
+  white-space: nowrap;
+}
+
+.recipe-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 24rpx);
+  margin-bottom: var(--spacing-sm, 16rpx);
+  padding-bottom: var(--spacing-sm, 16rpx);
+  border-bottom: 1rpx solid var(--border-color, #ebedf0);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 8rpx);
+}
+
+.info-icon {
+  font-size: var(--font-size-md, 28rpx);
+}
+
+.info-text {
+  font-size: var(--font-size-sm, 24rpx);
+  color: var(--text-secondary, #646566);
+}
+
+.recipe-ingredients {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm, 16rpx);
+  font-size: var(--font-size-sm, 24rpx);
+  color: var(--text-secondary, #646566);
+  line-height: 1.5;
+}
+
+.ingredients-label {
+  color: var(--text-tertiary, #969799);
+  margin-right: var(--spacing-xs, 8rpx);
+  flex-shrink: 0;
+}
+
+.ingredients-text {
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recipe-image-wrapper {
+  width: 100%;
+  height: 300rpx;
+  border-radius: var(--border-radius, 8rpx);
+  overflow: hidden;
+}
+
+.recipe-image {
+  width: 100%;
+  height: 100%;
+}

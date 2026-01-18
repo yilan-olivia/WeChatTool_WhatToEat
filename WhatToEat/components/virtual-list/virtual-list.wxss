@@ -1,0 +1,14 @@
+/* 虚拟列表组件样式 */
+.virtual-list {
+  width: 100%;
+  overflow: hidden;
+}
+
+.virtual-list-container {
+  position: relative;
+  width: 100%;
+}
+
+.virtual-list-item {
+  width: 100%;
+}

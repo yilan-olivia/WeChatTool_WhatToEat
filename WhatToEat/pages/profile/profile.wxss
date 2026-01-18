@@ -11,6 +11,23 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: var(--spacing-lg) var(--spacing-md);
   margin-bottom: var(--spacing-md);
+  transition: all 0.3s ease;
+  animation: fadeInDown 0.5s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-card:active {
+  opacity: 0.9;
 }
 
 .user-avatar {
@@ -19,6 +36,11 @@
   border-radius: 50%;
   border: 4rpx solid rgba(255, 255, 255, 0.3);
   margin-right: var(--spacing-md);
+  transition: transform 0.3s ease;
+}
+
+.user-card:active .user-avatar {
+  transform: scale(1.05);
 }
 
 .user-info {
@@ -63,6 +85,24 @@
   align-items: center;
   padding: var(--spacing-md);
   border-bottom: 1rpx solid var(--border-color);
+  transition: all 0.3s ease;
+  animation: slideInRight 0.5s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.menu-item:active {
+  background-color: var(--bg-gray);
+  transform: translateX(-10rpx);
 }
 
 .menu-item:last-child {
@@ -106,4 +146,10 @@
 
 .logout-btn {
   width: 100%;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:active {
+  transform: scale(0.98);
+  opacity: 0.8;
 }

@@ -51,11 +51,17 @@
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
   white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.category-item:active {
+  transform: scale(0.95);
 }
 
 .category-item.active {
   background-color: var(--primary-color);
   color: #ffffff;
+  font-weight: 500;
 }
 
 /* 菜品列表 */
@@ -68,12 +74,6 @@
   padding: var(--spacing-sm) var(--spacing-md);
 }
 
-.load-more {
-  text-align: center;
-  padding: var(--spacing-md);
-  color: var(--text-tertiary);
-  font-size: var(--font-size-sm);
-}
 
 /* 悬浮添加按钮 */
 .fab {
@@ -89,6 +89,12 @@
   justify-content: center;
   box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.4);
   z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.fab:active {
+  transform: scale(0.9);
+  box-shadow: 0 2rpx 6rpx rgba(7, 193, 96, 0.3);
 }
 
 .fab-icon {

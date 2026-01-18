@@ -1,0 +1,20 @@
+<!-- 相机遮罩组件 -->
+<view class="camera-overlay" wx:if="{{show}}">
+  <view class="overlay-mask" bindtap="onMaskTap"></view>
+  <view class="overlay-content">
+    <view class="overlay-header">
+      <text class="overlay-title">{{title}}</text>
+      <view class="close-btn" bindtap="onClose">
+        <text class="close-icon">✕</text>
+      </view>
+    </view>
+    
+    <view class="overlay-body">
+      <slot></slot>
+    </view>
+    
+    <view class="overlay-footer" wx:if="{{showFooter}}">
+      <slot name="footer"></slot>
+    </view>
+  </view>
+</view>

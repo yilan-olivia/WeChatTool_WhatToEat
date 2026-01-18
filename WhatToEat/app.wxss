@@ -6,7 +6,17 @@
 @import './styles/common.wxss';
 
 /* 全局重置 */
-* {
+/* 注意：微信小程序WXSS不支持 * 通用选择器，使用 page 和 view 等具体选择器 */
+page,
+view,
+text,
+image,
+button,
+input,
+textarea,
+scroll-view,
+swiper,
+swiper-item {
   box-sizing: border-box;
 }
 

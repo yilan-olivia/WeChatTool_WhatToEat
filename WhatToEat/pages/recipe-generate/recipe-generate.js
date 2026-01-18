@@ -18,6 +18,7 @@ Page({
     preference: '无要求', // 当前选中的偏好
     generating: false, // 是否正在生成
     generatedRecipe: null, // 生成的食谱
+    nutritionData: [], // 营养数据
   },
 
   /**
@@ -123,8 +124,12 @@ Page({
         ],
       };
 
+      // 计算营养数据
+      const nutritionData = this.calculateNutritionData(mockRecipe);
+
       this.setData({
         generatedRecipe: mockRecipe,
+        nutritionData: nutritionData,
       });
 
       showToast('食谱生成成功', 'success');
@@ -166,6 +171,59 @@ Page({
     } finally {
       this.setData({ loading: false });
     }
+  },
+
+  /**
+   * 计算营养数据
+   */
+  calculateNutritionData(recipe) {
+    const nutritionData = [];
+    
+    if (recipe.calories) {
+      nutritionData.push({
+        name: '热量',
+        type: 'calories',
+        value: parseFloat(recipe.calories) || 0,
+        unit: '卡',
+      });
+    }
+    
+    if (recipe.protein) {
+      nutritionData.push({
+        name: '蛋白质',
+        type: 'protein',
+        value: parseFloat(recipe.protein) || 0,
+        unit: 'g',
+      });
+    }
+    
+    if (recipe.fat) {
+      nutritionData.push({
+        name: '脂肪',
+        type: 'fat',
+        value: parseFloat(recipe.fat) || 0,
+        unit: 'g',
+      });
+    }
+    
+    if (recipe.carbs) {
+      nutritionData.push({
+        name: '碳水化合物',
+        type: 'carbs',
+        value: parseFloat(recipe.carbs) || 0,
+        unit: 'g',
+      });
+    }
+    
+    return nutritionData;
+  },
+
+  /**
+   * 食谱卡片点击事件
+   */
+  onRecipeTap(e) {
+    // 可以跳转到食谱详情页
+    console.log('点击食谱:', e.detail.recipe);
   },
 
   /**

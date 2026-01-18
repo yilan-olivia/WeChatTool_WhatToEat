@@ -1,0 +1,44 @@
+/* 加载更多组件样式 */
+.loading-more {
+  padding: var(--spacing-md, 24rpx);
+  text-align: center;
+}
+
+.loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 16rpx);
+}
+
+.loading-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 3rpx solid var(--bg-gray, #f2f3f5);
+  border-top: 3rpx solid var(--primary-color, #07c160);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: var(--font-size-sm, 24rpx);
+  color: var(--text-secondary, #646566);
+}
+
+.no-more {
+  padding: var(--spacing-sm, 16rpx) 0;
+}
+
+.no-more-text {
+  font-size: var(--font-size-sm, 24rpx);
+  color: var(--text-tertiary, #969799);
+}

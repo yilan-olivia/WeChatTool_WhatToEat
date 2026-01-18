@@ -34,6 +34,15 @@ Page({
   },
 
   /**
+   * 下拉刷新
+   */
+  onPullDownRefresh() {
+    this.loadData().finally(() => {
+      wx.stopPullDownRefresh();
+    });
+  },
+
+  /**
    * 加载数据
    */
   async loadData() {

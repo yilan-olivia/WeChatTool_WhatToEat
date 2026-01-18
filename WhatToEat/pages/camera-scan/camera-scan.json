@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "拍照识别",
   "usingComponents": {
-    "loading": "../../components/loading/loading"
+    "loading": "../../components/loading/loading",
+    "camera-overlay": "../../components/camera-overlay/camera-overlay"
   }
 }

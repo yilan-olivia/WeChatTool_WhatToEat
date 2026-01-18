@@ -3,6 +3,7 @@
   "enablePullDownRefresh": true,
   "usingComponents": {
     "loading": "../../components/loading/loading",
-    "empty": "../../components/empty/empty"
+    "empty": "../../components/empty/empty",
+    "loading-more": "../../components/loading-more/loading-more"
   }
 }

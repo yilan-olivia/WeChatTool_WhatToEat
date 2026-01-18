@@ -17,11 +17,18 @@
   position: relative;
   width: 100%;
   height: 500rpx;
+  border-radius: var(--border-radius, 8rpx);
+  overflow: hidden;
 }
 
 .preview-image {
   width: 100%;
   height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.preview-wrapper:active .preview-image {
+  transform: scale(1.05);
 }
 
 .preview-mask {
@@ -35,7 +42,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease;
 }
 
 .preview-wrapper:active .preview-mask {
@@ -112,6 +119,12 @@
 
 .action-section .btn {
   flex: 1;
+  transition: all 0.3s ease;
+}
+
+.action-section .btn:active {
+  transform: scale(0.98);
+  opacity: 0.8;
 }
 
 /* 表单区域 */

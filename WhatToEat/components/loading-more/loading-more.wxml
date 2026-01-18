@@ -1,0 +1,10 @@
+<!-- 加载更多组件 -->
+<view class="loading-more" wx:if="{{show}}">
+  <view class="loading-content" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{loadingText}}</text>
+  </view>
+  <view class="no-more" wx:else>
+    <text class="no-more-text">{{noMoreText}}</text>
+  </view>
+</view>

@@ -1,0 +1,36 @@
+<!-- 食谱卡片组件 -->
+<view class="recipe-card" bindtap="onCardTap">
+  <view class="recipe-header">
+    <view class="recipe-title">{{recipe.name || '未知食谱'}}</view>
+    <view class="recipe-badge" wx:if="{{recipe.difficulty}}">{{recipe.difficulty}}</view>
+  </view>
+  
+  <view class="recipe-info">
+    <view class="info-item" wx:if="{{recipe.time}}">
+      <text class="info-icon">⏱</text>
+      <text class="info-text">{{recipe.time}}</text>
+    </view>
+    <view class="info-item" wx:if="{{recipe.calories}}">
+      <text class="info-icon">🔥</text>
+      <text class="info-text">{{recipe.calories}} 卡</text>
+    </view>
+    <view class="info-item" wx:if="{{recipe.likeCount !== undefined}}">
+      <text class="info-icon">👍</text>
+      <text class="info-text">{{recipe.likeCount}}</text>
+    </view>
+  </view>
+
+  <view class="recipe-ingredients" wx:if="{{recipe.ingredients && recipe.ingredients.length > 0}}">
+    <text class="ingredients-label">食材：</text>
+    <text class="ingredients-text">{{ingredientsText}}</text>
+  </view>
+
+  <view class="recipe-image-wrapper" wx:if="{{recipe.images && recipe.images.length > 0}}">
+    <image 
+      class="recipe-image" 
+      src="{{recipe.images[0]}}" 
+      mode="aspectFill"
+      lazy-load="{{true}}"
+    ></image>
+  </view>
+</view>

@@ -1,0 +1,18 @@
+<!-- 营养进度条组件 -->
+<view class="nutrition-bar">
+  <view class="nutrition-item" wx:for="{{processedNutritionData || nutritionData}}" wx:key="name">
+    <view class="nutrition-header">
+      <text class="nutrition-name">{{item.name}}</text>
+      <text class="nutrition-value">{{item.value}}{{item.unit}}</text>
+    </view>
+    <view class="progress-wrapper">
+      <view class="progress-bar">
+        <view 
+          class="progress-fill {{item.colorClass || 'default'}}" 
+          style="width: {{item.percentage}}%"
+        ></view>
+      </view>
+      <text class="nutrition-percentage" wx:if="{{showPercentage}}">{{item.percentage}}%</text>
+    </view>
+  </view>
+</view>

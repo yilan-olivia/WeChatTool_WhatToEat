@@ -42,6 +42,12 @@
 .query-btn {
   padding: var(--spacing-xs) var(--spacing-md);
   font-size: var(--font-size-sm);
+  transition: all 0.3s ease;
+}
+
+.query-btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 /* 统计概览 */
@@ -72,6 +78,29 @@
   padding: var(--spacing-md);
   background-color: var(--bg-gray);
   border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-box:active {
+  transform: scale(0.95);
+  background-color: var(--primary-color);
+}
+
+.stat-box:active .stat-value,
+.stat-box:active .stat-label {
+  color: #ffffff;
 }
 
 .stat-value {
@@ -79,11 +108,13 @@
   font-weight: bold;
   color: var(--primary-color);
   margin-bottom: var(--spacing-xs);
+  transition: color 0.3s ease;
 }
 
 .stat-label {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
 /* 分类统计 */
@@ -92,6 +123,16 @@
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
   margin-bottom: var(--spacing-md);
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .section-title {
