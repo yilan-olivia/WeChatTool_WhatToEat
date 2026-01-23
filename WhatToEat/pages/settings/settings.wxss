@@ -1,0 +1,138 @@
+/* 设置页面样式 */
+.container {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding-bottom: var(--spacing-xl);
+}
+
+/* 区块样式 */
+.section {
+  margin-bottom: var(--spacing-md);
+}
+
+.section-title {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+}
+
+.section-content {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* 设置项样式 */
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border-bottom: 1rpx solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item:active {
+  background-color: var(--bg-gray);
+}
+
+.setting-label {
+  flex: 1;
+  margin-right: var(--spacing-md);
+}
+
+.setting-name {
+  display: block;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.setting-desc {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* 开关样式 */
+switch {
+  transform: scale(0.9);
+}
+
+/* 选择器样式 */
+picker {
+  min-width: 200rpx;
+  text-align: right;
+}
+
+.picker-text {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--bg-gray);
+  text-align: right;
+}
+
+/* 操作项样式 */
+.action-item {
+  cursor: pointer;
+}
+
+.action-arrow {
+  font-size: var(--font-size-lg);
+  color: var(--text-tertiary);
+  margin-left: var(--spacing-sm);
+}
+
+/* 保存按钮样式 */
+.save-section {
+  padding: var(--spacing-md);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.save-btn {
+  width: 100%;
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+/* 响应式设计 */
+@media (prefers-color-scheme: dark) {
+  .section-content {
+    background-color: #2a2a2a;
+  }
+  
+  .setting-item:active {
+    background-color: #3a3a3a;
+  }
+  
+  .picker-text {
+    background-color: #3a3a3a;
+    color: #ccc;
+  }
+  
+  .save-section {
+    background-color: rgba(42, 42, 42, 0.95);
+  }
+}

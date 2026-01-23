@@ -4,6 +4,9 @@
  * 包含食材匹配、偏好权重、营养评分等算法
  */
 
+// 加载环境变量
+require('dotenv').config();
+
 const cloud = require('wx-server-sdk');
 const { checkRateLimit } = require('../common/rateLimit');
 const { validate } = require('../common/validator');

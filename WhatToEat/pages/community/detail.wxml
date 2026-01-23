@@ -1,0 +1,64 @@
+<!-- 食谱详情页 -->
+<view class="container">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <loading show="{{loading}}" text="加载中..."></loading>
+  </view>
+
+  <!-- 食谱内容 -->
+  <view wx:elif="{{recipe}}" class="recipe-container">
+    <!-- 标题 -->
+    <view class="header-section">
+      <text class="recipe-title">{{recipe.title}}</text>
+      <view class="recipe-meta">
+        <text class="recipe-tag" wx:if="{{recipe.typeValue}}">{{recipe.typeValue}}</text>
+        <text class="recipe-time">{{recipe.createTime}}</text>
+      </view>
+    </view>
+
+    <!-- 图片展示 -->
+    <view class="images-section" wx:if="{{recipe.images && recipe.images.length > 0}}">
+      <scroll-view class="images-scroll" scroll-x>
+        <view class="images-list">
+          <image 
+            class="recipe-image" 
+            wx:for="{{recipe.images}}" 
+            wx:key="index"
+            wx:for-item="img"
+            src="{{img}}" 
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-index="{{index}}"
+          ></image>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 内容 -->
+    <view class="content-section">
+      <text class="recipe-content">{{recipe.content}}</text>
+    </view>
+
+    <!-- 操作栏 -->
+    <view class="actions-section">
+      <view class="action-btn" bindtap="onLike">
+        <text class="action-icon {{isLiked ? 'liked' : ''}}">👍</text>
+        <text class="action-text">{{recipe.likeCount || 0}}</text>
+      </view>
+      <view class="action-btn" bindtap="onCollect">
+        <text class="action-icon {{isCollected ? 'collected' : ''}}">⭐</text>
+        <text class="action-text">收藏</text>
+      </view>
+      <view class="action-btn delete-btn" wx:if="{{isAuthor}}" bindtap="onDelete">
+        <text class="action-icon">🗑️</text>
+        <text class="action-text">删除</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:else class="error-container">
+    <text class="error-text">加载失败，请重试</text>
+    <button class="retry-btn" bindtap="retryLoad">重试</button>
+  </view>
+</view>

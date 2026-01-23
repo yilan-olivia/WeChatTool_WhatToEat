@@ -30,13 +30,26 @@ export const getLoginCode = () => {
  */
 export const getUserProfile = () => {
   return new Promise((resolve, reject) => {
-    wx.getUserProfile({
-      desc: '用于完善用户资料',
+    // 使用wx.getUserInfo获取用户信息
+    wx.getUserInfo({
       success: (res) => {
         resolve(res.userInfo);
       },
       fail: (err) => {
-        reject(err);
+        // 如果失败，检查是否是因为未授权
+        wx.getSetting({
+          success: (res) => {
+            if (!res.authSetting['scope.userInfo']) {
+              // 未授权，需要通过button组件的open-type="getUserInfo"来获取授权
+              reject(new Error('需要用户授权才能获取个人信息，请点击授权按钮'));
+            } else {
+              reject(err);
+            }
+          },
+          fail: (err) => {
+            reject(err);
+          },
+        });
       },
     });
   });

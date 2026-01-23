@@ -1,0 +1,9 @@
+{
+  "name": "likeImprint",
+  "version": "1.0.0",
+  "description": "点赞食谱云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

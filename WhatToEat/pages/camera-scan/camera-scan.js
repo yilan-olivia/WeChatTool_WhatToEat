@@ -112,12 +112,35 @@ Page({
       });
 
       // 调用云函数进行图片识别
-      // 这里预留接口，实际需要实现图片识别云函数
-      // const result = await callCloudFunction(cloudFunctions.imageRecognition, {
-      //   fileID: uploadResult.fileID,
-      // });
+      const result = await wx.cloud.callFunction({
+        name: 'food-recognition',
+        data: {
+          fileID: uploadResult.fileID,
+        },
+      });
 
-      // 模拟识别结果（实际应该从云函数返回）
+      // 处理识别结果
+      if (result.result.errCode === 0) {
+        this.setData({
+          recognitionResult: result.result.data,
+        });
+        showToast('识别成功', 'success');
+      } else {
+        // 识别失败，使用降级方案（模拟数据）
+        const mockResult = {
+          name: '西红柿',
+          category: '蔬菜',
+          confidence: 0.95,
+        };
+
+        this.setData({
+          recognitionResult: mockResult,
+        });
+        showToast('识别失败，使用默认结果', 'none');
+      }
+    } catch (err) {
+      console.error('识别失败:', err);
+      // 出错时使用模拟数据
       const mockResult = {
         name: '西红柿',
         category: '蔬菜',
@@ -127,11 +150,7 @@ Page({
       this.setData({
         recognitionResult: mockResult,
       });
-
-      showToast('识别成功', 'success');
-    } catch (err) {
-      console.error('识别失败:', err);
-      showToast('识别失败，请重试', 'none');
+      showToast('识别失败，使用默认结果', 'none');
     } finally {
       this.setData({ 
         recognizing: false,
@@ -225,3 +244,4 @@ Page({
     }
   },
 });
+

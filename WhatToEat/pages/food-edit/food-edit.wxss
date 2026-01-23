@@ -1,0 +1,155 @@
+/* 菜品编辑页样式 */
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+  background-color: #f7f8fa;
+}
+
+/* 图片上传 */
+.image-upload {
+  margin-bottom: 30rpx;
+}
+
+.upload-area {
+  position: relative;
+  width: 100%;
+  height: 300rpx;
+  border-radius: 10rpx;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.food-image {
+  width: 100%;
+  height: 100%;
+}
+
+.upload-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.upload-text {
+  font-size: 28rpx;
+}
+
+/* 表单 */
+.form {
+  background-color: white;
+  border-radius: 10rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+}
+
+.form-textarea {
+  min-height: 150rpx;
+  resize: none;
+}
+
+.form-picker {
+  position: relative;
+  padding: 20rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  background-color: #f9f9f9;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 数量输入 */
+.quantity-input {
+  display: flex;
+  gap: 20rpx;
+}
+
+.quantity-number {
+  flex: 1;
+  padding: 20rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+}
+
+.quantity-unit {
+  flex: 0 0 150rpx;
+  padding: 20rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  background-color: #f9f9f9;
+}
+
+/* 操作按钮 */
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 50rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #07c160;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .upload-area {
+    height: 250rpx;
+  }
+  
+  .form {
+    padding: 20rpx;
+  }
+  
+  .btn {
+    height: 70rpx;
+    font-size: 28rpx;
+  }
+}

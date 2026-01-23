@@ -41,6 +41,122 @@
     </view>
   </view>
 
+  <!-- 卡路里统计 -->
+  <view class="calories-section" wx:if="{{reportData}}">
+    <view class="section-title">卡路里摄入</view>
+    
+    <!-- 每周卡路里 -->
+    <view class="calories-card">
+      <view class="calories-header">
+        <text class="calories-label">本周总摄入</text>
+        <text class="calories-value">{{weeklyCalories || 0}}</text>
+        <text class="calories-unit">卡</text>
+      </view>
+    </view>
+
+    <!-- 每日卡路里 -->
+    <view class="daily-calories" wx:if="{{dailyCalories.length > 0}}">
+      <view class="daily-title">每日摄入</view>
+      <view class="daily-list">
+        <view 
+          class="daily-item"
+          wx:for="{{dailyCalories}}" 
+          wx:key="date"
+        >
+          <text class="daily-date">{{item.date}}</text>
+          <view class="daily-bar-wrapper">
+            <view class="daily-bar" style="width: {{item.calories > 2000 ? 100 : (item.calories / 2000 * 100)}}%"></view>
+          </view>
+          <text class="daily-value">{{item.calories}}卡</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 营养均衡情况 -->
+  <view class="nutrition-balance-section" wx:if="{{nutritionBalance}}">
+    <view class="section-title">营养均衡情况</view>
+    
+    <!-- 综合评分 -->
+    <view class="balance-score-card">
+      <view class="score-circle">
+        <text class="score-value">{{nutritionBalance.score}}</text>
+        <text class="score-label">分</text>
+      </view>
+      <view class="score-info">
+        <text class="score-level">{{nutritionBalance.level}}</text>
+        <text class="score-desc">营养均衡评分</text>
+      </view>
+    </view>
+
+    <!-- 各项营养指标 -->
+    <view class="nutrition-items">
+      <!-- 卡路里 -->
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">热量</text>
+          <text class="nutrition-status nutrition-status-{{nutritionBalance.calories.statusClass}}">{{nutritionBalance.calories.status}}</text>
+        </view>
+        <view class="nutrition-progress">
+          <view class="nutrition-progress-bar" style="width: {{nutritionBalance.calories.percentage > 100 ? 100 : nutritionBalance.calories.percentage}}%"></view>
+        </view>
+        <view class="nutrition-detail">
+          <text class="nutrition-value">{{nutritionBalance.calories.value}}卡</text>
+          <text class="nutrition-target">/ {{nutritionBalance.calories.target}}卡</text>
+          <text class="nutrition-percentage">({{nutritionBalance.calories.percentage}}%)</text>
+        </view>
+      </view>
+
+      <!-- 蛋白质 -->
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">蛋白质</text>
+          <text class="nutrition-status nutrition-status-{{nutritionBalance.protein.statusClass}}">{{nutritionBalance.protein.status}}</text>
+        </view>
+        <view class="nutrition-progress">
+          <view class="nutrition-progress-bar" style="width: {{nutritionBalance.protein.percentage > 100 ? 100 : nutritionBalance.protein.percentage}}%"></view>
+        </view>
+        <view class="nutrition-detail">
+          <text class="nutrition-value">{{nutritionBalance.protein.value}}g</text>
+          <text class="nutrition-target">/ {{nutritionBalance.protein.target}}g</text>
+          <text class="nutrition-percentage">({{nutritionBalance.protein.percentage}}%)</text>
+        </view>
+      </view>
+
+      <!-- 脂肪 -->
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">脂肪</text>
+          <text class="nutrition-status nutrition-status-{{nutritionBalance.fat.statusClass}}">{{nutritionBalance.fat.status}}</text>
+        </view>
+        <view class="nutrition-progress">
+          <view class="nutrition-progress-bar" style="width: {{nutritionBalance.fat.percentage > 100 ? 100 : nutritionBalance.fat.percentage}}%"></view>
+        </view>
+        <view class="nutrition-detail">
+          <text class="nutrition-value">{{nutritionBalance.fat.value}}g</text>
+          <text class="nutrition-target">/ {{nutritionBalance.fat.target}}g</text>
+          <text class="nutrition-percentage">({{nutritionBalance.fat.percentage}}%)</text>
+        </view>
+      </view>
+
+      <!-- 碳水化合物 -->
+      <view class="nutrition-item">
+        <view class="nutrition-header">
+          <text class="nutrition-name">碳水化合物</text>
+          <text class="nutrition-status nutrition-status-{{nutritionBalance.carbs.statusClass}}">{{nutritionBalance.carbs.status}}</text>
+        </view>
+        <view class="nutrition-progress">
+          <view class="nutrition-progress-bar" style="width: {{nutritionBalance.carbs.percentage > 100 ? 100 : nutritionBalance.carbs.percentage}}%"></view>
+        </view>
+        <view class="nutrition-detail">
+          <text class="nutrition-value">{{nutritionBalance.carbs.value}}g</text>
+          <text class="nutrition-target">/ {{nutritionBalance.carbs.target}}g</text>
+          <text class="nutrition-percentage">({{nutritionBalance.carbs.percentage}}%)</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <!-- 分类统计 -->
   <view class="category-stats" wx:if="{{reportData && reportData.categoryStats}}">
     <view class="section-title">分类统计</view>

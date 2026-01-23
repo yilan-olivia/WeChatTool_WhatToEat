@@ -40,14 +40,15 @@
     <view class="foods-list" wx:if="{{foods.length > 0}}">
       <food-card 
         wx:for="{{foods}}" 
-        wx:key="id" 
+        wx:key="id"
         food="{{item}}"
         bindtap="onFoodTap"
+        bindlongpress="onFoodLongPress"
       ></food-card>
     </view>
     <empty wx:else text="暂无菜品" show-action="{{true}}">
       <view slot="action">
-        <button class="btn btn-primary" bindtap="navigateToCameraScan">添加菜品</button>
+        <button class="btn btn-primary" bindtap="navigateToFoodEdit">添加菜品</button>
       </view>
     </empty>
     
@@ -61,7 +62,7 @@
   </scroll-view>
 
   <!-- 添加按钮 -->
-  <view class="fab" bindtap="navigateToCameraScan">
+  <view class="fab" bindtap="navigateToFoodEdit">
     <text class="fab-icon">+</text>
   </view>
 </view>

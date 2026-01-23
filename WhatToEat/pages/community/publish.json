@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "发布食谱",
+  "usingComponents": {
+    "loading": "../../components/loading/loading"
+  }
+}

@@ -214,3 +214,239 @@
   color: var(--text-primary);
   line-height: 1.6;
 }
+
+/* 卡路里统计 */
+.calories-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  animation: fadeIn 0.5s ease;
+}
+
+.calories-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  color: #ffffff;
+}
+
+.calories-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+.calories-label {
+  font-size: var(--font-size-md);
+  opacity: 0.9;
+}
+
+.calories-value {
+  font-size: 64rpx;
+  font-weight: bold;
+}
+
+.calories-unit {
+  font-size: var(--font-size-md);
+  opacity: 0.9;
+}
+
+.daily-calories {
+  margin-top: var(--spacing-md);
+}
+
+.daily-title {
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.daily-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.daily-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.daily-date {
+  width: 140rpx;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.daily-bar-wrapper {
+  flex: 1;
+  height: 24rpx;
+  background-color: var(--bg-gray);
+  border-radius: 12rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.daily-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12rpx;
+  transition: width 0.5s ease;
+}
+
+.daily-value {
+  width: 100rpx;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 营养均衡情况 */
+.nutrition-balance-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  animation: fadeIn 0.5s ease;
+}
+
+.balance-score-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-md);
+  color: #ffffff;
+}
+
+.score-circle {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.score-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.score-label {
+  font-size: var(--font-size-xs);
+  opacity: 0.9;
+  margin-top: 4rpx;
+}
+
+.score-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.score-level {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+}
+
+.score-desc {
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+}
+
+.nutrition-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.nutrition-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.nutrition-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nutrition-name {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.nutrition-status {
+  font-size: var(--font-size-xs);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  background-color: var(--bg-gray);
+  color: var(--text-secondary);
+}
+
+.nutrition-status-normal {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.nutrition-status-insufficient {
+  background-color: #fff3e0;
+  color: #ff9800;
+}
+
+.nutrition-status-excessive {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.nutrition-progress {
+  height: 16rpx;
+  background-color: var(--bg-gray);
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.nutrition-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%);
+  border-radius: 8rpx;
+  transition: width 0.5s ease;
+}
+
+.nutrition-detail {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+}
+
+.nutrition-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.nutrition-target {
+  color: var(--text-tertiary);
+}
+
+.nutrition-percentage {
+  color: var(--text-secondary);
+  margin-left: auto;
+}

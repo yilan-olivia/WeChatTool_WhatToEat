@@ -1,0 +1,99 @@
+<!-- 菜品编辑页 -->
+<view class="container">
+  <!-- 图片上传 -->
+  <view class="image-upload">
+    <view class="upload-area" bindtap="chooseImage">
+      <image class="food-image" src="{{food.image || '/images/default-food.png'}}" mode="aspectFill"></image>
+      <view class="upload-overlay">
+        <text class="upload-text">点击上传图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form">
+    <!-- 菜品名称 -->
+    <view class="form-item">
+      <text class="form-label">菜品名称</text>
+      <input 
+        class="form-input" 
+        placeholder="请输入菜品名称" 
+        value="{{food.name}}"
+        bindinput="onInput"
+        data-field="name"
+      />
+    </view>
+
+    <!-- 分类选择 -->
+    <view class="form-item">
+      <text class="form-label">分类</text>
+      <picker 
+        class="form-picker" 
+        range="{{categories}}" 
+        value="{{categories.indexOf(food.category)}}" 
+        bindchange="onCategoryChange"
+      >
+        <view class="picker-text">{{food.category}}</view>
+      </picker>
+    </view>
+
+    <!-- 数量 -->
+    <view class="form-item">
+      <text class="form-label">数量</text>
+      <view class="quantity-input">
+        <input 
+          class="quantity-number" 
+          placeholder="请输入数量" 
+          value="{{food.quantity}}"
+          bindinput="onInput"
+          data-field="quantity"
+          type="number"
+        />
+        <picker 
+          class="quantity-unit" 
+          range="{{units}}" 
+          value="{{units.indexOf(food.unit)}}" 
+          bindchange="onUnitChange"
+        >
+          <view class="picker-text">{{food.unit}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 保质期 -->
+    <view class="form-item">
+      <text class="form-label">保质期</text>
+      <picker 
+        class="form-picker" 
+        mode="date" 
+        value="{{food.expireDate}}" 
+        start="{{currentDate}}" 
+        bindchange="onDateChange"
+      >
+        <view class="picker-text">{{food.expireDate || '请选择保质期'}}</view>
+      </picker>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <textarea 
+        class="form-textarea" 
+        placeholder="请输入备注信息" 
+        value="{{food.notes}}"
+        bindinput="onInput"
+        data-field="notes"
+        auto-height
+      ></textarea>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="actions">
+    <button class="btn btn-primary" bindtap="saveFood">保存</button>
+    <button class="btn btn-danger" bindtap="deleteFood" wx:if="{{isEdit}}">删除</button>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="保存中..."></loading>

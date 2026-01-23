@@ -1,0 +1,41 @@
+# 微信小程序相关
+node_modules/
+.DS_Store
+*.log
+
+# 环境变量和敏感信息
+.env
+.env.local
+.env.*.local
+project.private.config.json
+*.private.config.json
+
+# 微信开发者工具生成的文件
+miniprogram_npm/
+sitemap.json
+
+# IDE 相关
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+Thumbs.db
+.DS_Store
+
+# 临时文件
+*.tmp
+*.temp
+
+# 云函数依赖（可选，如果团队统一管理则保留）
+# cloudfunctions/*/node_modules/
+
+# 日志文件
+logs/
+*.log
+
+# 编译输出
+dist/
+build/

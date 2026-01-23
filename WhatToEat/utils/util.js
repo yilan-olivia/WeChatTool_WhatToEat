@@ -83,6 +83,32 @@ export const showToast = (title, icon = 'none', duration = 2000) => {
 };
 
 /**
+ * 显示成功提示
+ * @param {string} title 提示内容
+ * @param {number} duration 显示时长（毫秒）
+ */
+export const showSuccess = (title, duration = 2000) => {
+  wx.showToast({
+    title,
+    icon: 'success',
+    duration,
+  });
+};
+
+/**
+ * 显示错误提示
+ * @param {string} title 提示内容
+ * @param {number} duration 显示时长（毫秒）
+ */
+export const showError = (title, duration = 2000) => {
+  wx.showToast({
+    title,
+    icon: 'error',
+    duration,
+  });
+};
+
+/**
  * 显示加载提示
  * @param {string} title 提示内容
  */
@@ -101,21 +127,48 @@ export const hideLoading = () => {
 };
 
 /**
- * 显示确认对话框
- * @param {string} content 提示内容
- * @param {string} title 标题
- * @returns {Promise<boolean>} 返回用户选择结果
+ * 显示模态对话框
+ * @param {string} content 对话框内容
+ * @param {string} title 对话框标题
+ * @param {Object} options 配置选项
+ * @returns {Promise<Object>} 对话框结果
  */
-export const showModal = (content, title = '提示') => {
+export const showModal = (content, title = '提示', options = {}) => {
   return new Promise((resolve) => {
     wx.showModal({
       title,
       content,
+      showCancel: options.showCancel !== false,
+      cancelText: options.cancelText || '取消',
+      confirmText: options.confirmText || '确定',
       success: (res) => {
-        resolve(res.confirm);
+        resolve(res);
       },
-      fail: () => {
-        resolve(false);
+      fail: (err) => {
+        console.error('显示对话框失败:', err);
+        resolve({ confirm: false });
+      },
+    });
+  });
+};
+
+/**
+ * 显示操作菜单
+ * @param {Array} itemList 菜单项列表
+ * @param {Object} options 配置选项
+ * @returns {Promise<Object>} 菜单选择结果
+ */
+export const showActionSheet = (itemList, options = {}) => {
+  return new Promise((resolve) => {
+    wx.showActionSheet({
+      itemList,
+      itemColor: options.itemColor,
+      success: (res) => {
+        resolve(res);
+      },
+      fail: (err) => {
+        console.error('显示操作菜单失败:', err);
+        resolve({ cancel: true });
       },
     });
   });

@@ -1,0 +1,132 @@
+<!-- 设置页面 -->
+<view class="container">
+  <!-- 通知设置 -->
+  <view class="section">
+    <view class="section-title">通知设置</view>
+    <view class="section-content">
+      <view class="setting-item">
+        <view class="setting-label">
+          <text class="setting-name">过期提醒</text>
+          <text class="setting-desc">选择过期提醒方式</text>
+        </view>
+        <picker 
+          range="{{expireReminderOptions}}" 
+          range-key="label"
+          value="{{expireReminderIndex}}" 
+          bindchange="onExpireReminderChange"
+        >
+          <view class="picker-text">
+            {{expireReminderOptions[expireReminderIndex].label}}
+          </view>
+        </picker>
+      </view>
+      <view class="setting-item action-item" wx:if="{{settings.notifications.expireReminder !== 'none'}}" bindtap="testReminder">
+        <view class="setting-label">
+          <text class="setting-name">测试提醒</text>
+          <text class="setting-desc">立即测试过期提醒功能</text>
+        </view>
+        <text class="action-arrow">></text>
+      </view>
+      <view class="setting-item">
+        <view class="setting-label">
+          <text class="setting-name">食谱推荐</text>
+          <text class="setting-desc">基于您的食材推荐食谱</text>
+        </view>
+        <switch 
+          checked="{{settings.notifications.recipeRecommend}}" 
+          bindchange="onRecipeRecommendChange"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-label">
+          <text class="setting-name">社区更新</text>
+          <text class="setting-desc">社区有新帖子时通知</text>
+        </view>
+        <switch 
+          checked="{{settings.notifications.communityUpdate}}" 
+          bindchange="onCommunityUpdateChange"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐私设置 -->
+  <view class="section">
+    <view class="section-title">隐私设置</view>
+    <view class="section-content">
+      <view class="setting-item">
+        <view class="setting-label">
+          <text class="setting-name">显示个人资料</text>
+          <text class="setting-desc">在社区中显示您的资料</text>
+        </view>
+        <switch 
+          checked="{{settings.privacy.showProfile}}" 
+          bindchange="onShowProfileChange"
+        />
+      </view>
+      <view class="setting-item">
+        <view class="setting-label">
+          <text class="setting-name">显示统计数据</text>
+          <text class="setting-desc">在个人中心显示统计数据</text>
+        </view>
+        <switch 
+          checked="{{settings.privacy.showStatistics}}" 
+          bindchange="onShowStatisticsChange"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 饮食偏好 -->
+  <view class="section">
+    <view class="section-title">饮食偏好</view>
+    <view class="section-content">
+      <view class="setting-item">
+        <view class="setting-label">
+          <text class="setting-name">饮食类型</text>
+        </view>
+        <picker 
+          range="{{dietTypes}}" 
+          range-key="label"
+          value="{{dietTypeIndex}}" 
+          bindchange="onDietTypeChange"
+        >
+          <view class="picker-text">{{dietTypes[dietTypeIndex].label}}</view>
+        </picker>
+      </view>
+      <view class="setting-item">
+        <view class="setting-label">
+          <text class="setting-name">喜爱分类</text>
+        </view>
+        <picker 
+          range="{{foodCategories}}" 
+          value="{{favoriteCategoryIndex}}" 
+          bindchange="onFavoriteCategoryChange"
+        >
+          <view class="picker-text">{{foodCategories[favoriteCategoryIndex]}}</view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他设置 -->
+  <view class="section">
+    <view class="section-title">其他设置</view>
+    <view class="section-content">
+      <view class="setting-item action-item" bindtap="clearCache">
+        <view class="setting-label">
+          <text class="setting-name">清除缓存</text>
+        </view>
+        <text class="action-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-section">
+    <button class="btn btn-primary save-btn" bindtap="saveSettings">保存设置</button>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="保存中..."></loading>

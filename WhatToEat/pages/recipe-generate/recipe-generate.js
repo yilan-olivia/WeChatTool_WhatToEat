@@ -103,13 +103,60 @@ Page({
       );
 
       // 调用云函数生成食谱
-      // 这里预留接口，实际需要实现AI食谱生成云函数
-      // const result = await callCloudFunction(cloudFunctions.aiRecipe, {
-      //   foods: selectedFoodsData.map(f => f.name),
-      //   preference: this.data.preference,
-      // });
+      const result = await wx.cloud.callFunction({
+        name: 'recipe-generate',
+        data: {
+          foods: selectedFoodsData.map(f => f.name),
+          preference: this.data.preference,
+        },
+      });
 
-      // 模拟生成的食谱（实际应该从云函数返回）
+      // 处理生成结果
+      if (result.result.errCode === 0) {
+        const generatedRecipe = result.result.data;
+        
+        // 计算营养数据
+        const nutritionData = this.calculateNutritionData(generatedRecipe);
+
+        this.setData({
+          generatedRecipe,
+          nutritionData,
+        });
+
+        showToast('食谱生成成功', 'success');
+      } else {
+        // 生成失败，使用降级方案（模拟数据）
+        const mockRecipe = {
+          name: `${selectedFoodsData.map(f => f.name).join('、')} 炒菜`,
+          difficulty: '简单',
+          time: '30分钟',
+          calories: '350',
+          ingredients: selectedFoodsData.map(f => f.name),
+          steps: [
+            '将选中的菜品清洗干净，切好备用',
+            '热锅下油，放入调料爆香',
+            '依次加入菜品，翻炒均匀',
+            '加入适量调味料，炒至熟透即可',
+          ],
+        };
+
+        // 计算营养数据
+        const nutritionData = this.calculateNutritionData(mockRecipe);
+
+        this.setData({
+          generatedRecipe: mockRecipe,
+          nutritionData,
+        });
+
+        showToast('生成失败，使用默认结果', 'none');
+      }
+    } catch (err) {
+      console.error('生成食谱失败:', err);
+      // 出错时使用模拟数据
+      const selectedFoodsData = this.data.availableFoods.filter(food =>
+        this.data.selectedFoods.includes(food.id)
+      );
+
       const mockRecipe = {
         name: `${selectedFoodsData.map(f => f.name).join('、')} 炒菜`,
         difficulty: '简单',
@@ -129,13 +176,10 @@ Page({
 
       this.setData({
         generatedRecipe: mockRecipe,
-        nutritionData: nutritionData,
+        nutritionData,
       });
 
-      showToast('食谱生成成功', 'success');
-    } catch (err) {
-      console.error('生成食谱失败:', err);
-      showToast('生成失败，请重试', 'none');
+      showToast('生成失败，使用默认结果', 'none');
     } finally {
       this.setData({ 
         generating: false,
@@ -160,7 +204,7 @@ Page({
     try {
       await addData(dbCollections.recipes, {
         ...this.data.generatedRecipe,
-        foods: this.data.selectedFoods,
+        foodIds: this.data.selectedFoods,
         preference: this.data.preference,
       });
 
@@ -240,3 +284,5 @@ Page({
     });
   },
 });
+
+

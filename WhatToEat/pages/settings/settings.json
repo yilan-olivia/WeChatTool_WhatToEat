@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "loading": "../../components/loading/loading"
+  },
+  "navigationBarTitleText": "设置",
+  "navigationBarBackgroundColor": "#07c160",
+  "navigationBarTextStyle": "white"
+}

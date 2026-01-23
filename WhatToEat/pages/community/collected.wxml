@@ -1,0 +1,34 @@
+<!-- 食谱收藏页 -->
+<view class="container">
+  <view class="recipes-list" wx:if="{{collectedRecipes.length > 0}}">
+    <view 
+      class="recipe-item" 
+      wx:for="{{collectedRecipes}}" 
+      wx:key="_id"
+      bindtap="onRecipeTap"
+      data-id="{{item._id}}"
+    >
+      <image 
+        class="recipe-image" 
+        src="{{item.images && item.images[0] || '/images/default-food.png'}}" 
+        mode="aspectFill"
+      ></image>
+      <view class="recipe-info">
+        <view class="recipe-header">
+          <text class="recipe-title">{{item.title}}</text>
+          <view class="recipe-tags">
+            <text class="recipe-tag" wx:if="{{item.typeValue}}">{{item.typeValue}}</text>
+          </view>
+        </view>
+        <view class="recipe-stats">
+          <text class="recipe-stat">👍 {{item.likeCount || 0}}</text>
+          <text class="recipe-time">{{item.createTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <empty wx:else text="暂无收藏的食谱" show-action="{{false}}"></empty>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="加载中..."></loading>

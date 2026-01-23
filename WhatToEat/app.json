@@ -5,8 +5,13 @@
     "pages/camera-scan/camera-scan",
     "pages/recipe-generate/recipe-generate",
     "pages/community/community",
+    "pages/community/publish",
+    "pages/community/list",
+    "pages/community/detail",
+    "pages/community/collected",
     "pages/report/report",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/settings/settings"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,0 +1,100 @@
+<!-- 发布食谱页 -->
+<view class="container">
+  <!-- 标题输入区域 -->
+  <view class="input-section">
+    <view class="input-label">标题</view>
+    <input 
+      class="title-input" 
+      placeholder="请输入标题（1-20字）" 
+      value="{{title}}"
+      bindinput="onTitleInput"
+      maxlength="20"
+    />
+    <text class="char-count">{{title.length}}/20</text>
+  </view>
+
+  <!-- 类型选择区域 -->
+  <view class="type-section">
+    <view class="input-label">类型</view>
+    <view class="type-selectors">
+      <view class="type-selector-item">
+        <text class="type-label">饮食类型</text>
+        <picker 
+          mode="selector" 
+          range="{{dietTypes}}" 
+          range-key="label"
+          value="{{dietTypeIndex}}"
+          bindchange="onDietTypeChange"
+        >
+          <view class="picker-view">
+            <text class="picker-text">{{dietTypes[dietTypeIndex].label}}</text>
+            <text class="picker-arrow">></text>
+          </view>
+        </picker>
+      </view>
+      <view class="type-selector-item">
+        <text class="type-label">喜爱分类</text>
+        <picker 
+          mode="selector" 
+          range="{{foodCategories}}" 
+          value="{{favoriteCategoryIndex}}"
+          bindchange="onFavoriteCategoryChange"
+        >
+          <view class="picker-view">
+            <text class="picker-text">{{foodCategories[favoriteCategoryIndex]}}</text>
+            <text class="picker-arrow">></text>
+          </view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容输入区域 -->
+  <view class="input-section">
+    <view class="input-label">内容</view>
+    <textarea 
+      class="content-input" 
+      placeholder="请输入内容（10-200字）..." 
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="200"
+      auto-height
+    ></textarea>
+    <text class="char-count">{{content.length}}/200</text>
+  </view>
+
+  <!-- 图片选择区域 -->
+  <view class="images-section">
+    <view class="images-list">
+      <view 
+        class="image-item" 
+        wx:for="{{images}}" 
+        wx:key="index"
+      >
+        <image class="image" src="{{item}}" mode="aspectFill"></image>
+        <view class="image-delete" bindtap="removeImage" data-index="{{index}}">
+          <text class="delete-icon">×</text>
+        </view>
+      </view>
+      <view 
+        class="image-item add-image" 
+        wx:if="images.length < maxImages"
+        bindtap="chooseImage"
+      >
+        <text class="add-icon">+</text>
+        <text class="add-text">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button class="btn btn-secondary" bindtap="cancelPublish">取消</button>
+    <button class="btn btn-primary" bindtap="publishPost" disabled="{{loading || uploading}}">
+      {{loading ? '发布中...' : '发布'}}
+    </button>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="{{loadingText}}"></loading>

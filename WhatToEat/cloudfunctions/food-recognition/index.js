@@ -3,6 +3,9 @@
  * 调用AI API识别菜品图片，支持多服务商、缓存、置信度处理
  */
 
+// 加载环境变量
+require('dotenv').config();
+
 const cloud = require('wx-server-sdk');
 const { checkRateLimit } = require('../common/rateLimit');
 const { validate } = require('../common/validator');
