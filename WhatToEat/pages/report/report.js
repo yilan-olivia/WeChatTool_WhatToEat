@@ -2,7 +2,8 @@
  * 健康报告页
  */
 import { queryData, countData, dbCollections, dbCommand } from '../../utils/db.js';
-import { showToast, formatDate } from '../../utils/util.js';
+import { showToast } from '../../utils/util.js';
+import { formatDate } from '../../utils/date.js';
 
 Page({
   /**

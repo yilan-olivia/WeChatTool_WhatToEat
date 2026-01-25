@@ -35,5 +35,5 @@ export const thirdPartyApi = {
 export const cloudFunctions = {
   login: 'login', // 登录云函数
   aiRecipe: 'ai-recipe', // AI食谱生成云函数
-  imageRecognition: 'image-recognition', // 图片识别云函数（预留）
+  imageRecognition: 'food-recognition', // 图片识别云函数
 };

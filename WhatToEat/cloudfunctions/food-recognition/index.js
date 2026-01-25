@@ -4,11 +4,8 @@
  */
 
 const cloud = require('wx-server-sdk');
-const { checkRateLimit } = require('../common/rateLimit');
-const { validate } = require('../common/validator');
-const { info, error, logExecutionTime } = require('../common/logger');
-const { recognizeImage, calculateImageHash } = require('../common/aiClient');
-const { getCache, setCache } = require('../common/cache');
+const https = require('https');
+const querystring = require('querystring');
 const config = require('./config');
 
 cloud.init({
@@ -16,6 +13,147 @@ cloud.init({
 });
 
 const db = cloud.database();
+
+/**
+ * 发送HTTP请求
+ * @param {string} url URL
+ * @param {Object} options 请求选项
+ * @param {string} data 请求数据
+ * @returns {Promise<Object>}
+ */
+async function sendHttpRequest(url, options, data = '') {
+  return new Promise((resolve, reject) => {
+    const req = https.request(url, options, (res) => {
+      let responseData = '';
+      
+      res.on('data', (chunk) => {
+        responseData += chunk;
+      });
+      
+      res.on('end', () => {
+        try {
+          const parsedData = JSON.parse(responseData);
+          resolve(parsedData);
+        } catch (err) {
+          reject(new Error('解析响应失败: ' + err.message));
+        }
+      });
+    });
+    
+    req.on('error', (err) => {
+      reject(new Error('请求失败: ' + err.message));
+    });
+    
+    if (data) {
+      req.write(data);
+    }
+    
+    req.end();
+  });
+}
+
+/**
+ * 获取百度智能云access_token
+ * @returns {Promise<string>}
+ */
+async function getBaiduAccessToken() {
+  const { apiKey, secretKey, baseUrl, accessTokenPath } = config.aiApi;
+  const url = `${baseUrl}${accessTokenPath}`;
+  const params = {
+    grant_type: 'client_credentials',
+    client_id: apiKey,
+    client_secret: secretKey
+  };
+  
+  const fullUrl = `${url}?${querystring.stringify(params)}`;
+  
+  try {
+    const response = await sendHttpRequest(fullUrl, {
+      method: 'GET',
+      timeout: config.aiApi.timeout
+    });
+    
+    if (response && response.access_token) {
+      return response.access_token;
+    } else {
+      throw new Error('获取access_token失败');
+    }
+  } catch (err) {
+    console.error('获取百度access_token失败:', err);
+    throw err;
+  }
+}
+
+/**
+ * 下载图片并转换为base64
+ * @param {string} imageUrl 图片URL
+ * @returns {Promise<string>}
+ */
+async function downloadImageAsBase64(imageUrl) {
+  return new Promise((resolve, reject) => {
+    https.get(imageUrl, (res) => {
+      let chunks = [];
+      
+      res.on('data', (chunk) => {
+        chunks.push(chunk);
+      });
+      
+      res.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const base64Image = buffer.toString('base64');
+        resolve(base64Image);
+      });
+    }).on('error', (err) => {
+      reject(new Error('下载图片失败: ' + err.message));
+    });
+  });
+}
+
+/**
+ * 调用百度智能云菜品识别API
+ * @param {string} imageUrl 图片URL
+ * @returns {Promise<Object>}
+ */
+async function recognizeImageWithBaidu(imageUrl) {
+  const accessToken = await getBaiduAccessToken();
+  const { baseUrl, dishRecognitionPath } = config.aiApi;
+  const url = `${baseUrl}${dishRecognitionPath}?access_token=${accessToken}`;
+  
+  try {
+    // 下载图片并转换为base64
+    const base64Image = await downloadImageAsBase64(imageUrl);
+    
+    // 准备请求数据
+    const requestData = querystring.stringify({
+      image: base64Image,
+      top_num: 1 // 返回置信度最高的结果
+    });
+    
+    // 调用菜品识别API
+    const recognitionResponse = await sendHttpRequest(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(requestData)
+      },
+      timeout: config.aiApi.timeout
+    }, requestData);
+    
+    if (recognitionResponse && recognitionResponse.result) {
+      const result = recognitionResponse.result[0];
+      return {
+        name: result.name || '未知菜品',
+        category: '其他', // 百度API返回的结果中可能没有category，需要根据name映射
+        confidence: result.probability || 0.8
+      };
+    } else {
+      throw new Error('识别失败，未返回结果');
+    }
+  } catch (err) {
+    console.error('百度菜品识别失败:', err);
+    throw err;
+  }
+}
 
 /**
  * 使用模拟数据（降级方案）
@@ -53,9 +191,8 @@ async function recordCorrection(userId, imageHash, originalResult, correctedResu
         createTime: new Date(),
       },
     });
-    info('food-recognition', '记录用户纠错', { userId, imageHash }, userId);
   } catch (err) {
-    error('food-recognition', '记录纠错失败', err, userId);
+    console.error('记录纠错失败:', err);
   }
 }
 
@@ -67,170 +204,93 @@ exports.main = async (event, context) => {
   const userId = wxContext.OPENID;
   const { fileID, base64Image, correction } = event;
 
-  return await logExecutionTime('food-recognition', async () => {
-    try {
-      // 处理用户纠错
-      if (correction) {
-        const { imageHash, originalResult, correctedResult } = correction;
-        await recordCorrection(userId, imageHash, originalResult, correctedResult);
-        return {
-          errCode: 0,
-          errMsg: 'success',
-          data: { message: '纠错已记录' },
-        };
-      }
-
-      // 参数验证
-      if (!fileID && !base64Image) {
-        return {
-          errCode: -1,
-          errMsg: 'fileID或base64Image必须提供其一',
-          data: null,
-        };
-      }
-
-      // 频率限制检查
-      const rateLimit = await checkRateLimit('food-recognition', userId);
-      if (!rateLimit.allowed) {
-        return {
-          errCode: -2,
-          errMsg: rateLimit.message,
-          data: {
-            resetTime: rateLimit.resetTime,
-          },
-        };
-      }
-
-      info('food-recognition', '开始识别菜品', { userId, fileID: fileID || 'base64' }, userId);
-
-      let imageUrl;
-      let imageHash;
-
-      // 获取图片URL或使用base64
-      if (fileID) {
-        const tempUrlResult = await cloud.getTempFileURL({
-          fileList: [fileID],
-        });
-
-        if (!tempUrlResult.fileList || tempUrlResult.fileList.length === 0) {
-          throw new Error('获取图片URL失败');
-        }
-
-        imageUrl = tempUrlResult.fileList[0].tempFileURL;
-        // 计算图片hash用于缓存
-        imageHash = await calculateImageHash(imageUrl);
-      } else if (base64Image) {
-        // 使用base64图片
-        imageUrl = base64Image;
-        // 对base64计算hash
-        const crypto = require('crypto');
-        imageHash = crypto.createHash('md5').update(base64Image).digest('hex');
-      } else {
-        throw new Error('图片参数无效');
-      }
-
-      // 检查缓存
-      let recognitionResult;
-      if (config.cache.enabled) {
-        const cachedResult = await getCache(config.cache.collection, imageHash);
-        if (cachedResult) {
-          info('food-recognition', '使用缓存结果', { imageHash }, userId);
-          recognitionResult = cachedResult;
-        }
-      }
-
-      // 如果缓存未命中，调用AI API
-      if (!recognitionResult) {
-        try {
-          recognitionResult = await recognizeImage(
-            imageUrl,
-            config.aiApi,
-            config.aiApi.fallbackTypes || []
-          );
-        } catch (apiErr) {
-          error('food-recognition', 'AI API调用失败，使用降级方案', apiErr, userId);
-          // 降级到模拟数据
-          recognitionResult = await recognizeWithMock(imageUrl);
-        }
-
-        // 保存到缓存
-        if (config.cache.enabled && recognitionResult) {
-          try {
-            await setCache(
-              config.cache.collection,
-              imageHash,
-              recognitionResult,
-              config.cache.expireTime
-            );
-          } catch (cacheErr) {
-            error('food-recognition', '保存缓存失败', cacheErr, userId);
-          }
-        }
-      }
-
-      // 验证识别结果
-      if (!recognitionResult || !recognitionResult.name) {
-        return {
-          errCode: -3,
-          errMsg: '识别失败，无法识别菜品',
-          data: null,
-        };
-      }
-
-      // 置信度检查
-      const confidence = recognitionResult.confidence || 0.8;
-      const minConfidence = config.recognition.minConfidence || 0.6;
-      const lowConfidenceThreshold = config.recognition.lowConfidenceThreshold || 0.7;
-
-      if (confidence < minConfidence) {
-        return {
-          errCode: -4,
-          errMsg: '识别失败，置信度过低',
-          data: {
-            name: recognitionResult.name,
-            category: recognitionResult.category,
-            confidence,
-            warning: '置信度过低，结果可能不准确',
-          },
-        };
-      }
-
-      // 确保分类有效
-      const validCategories = ['蔬菜', '水果', '肉类', '海鲜', '调料', '其他'];
-      if (!validCategories.includes(recognitionResult.category)) {
-        recognitionResult.category = config.recognition.defaultCategory;
-      }
-
-      // 低置信度警告
-      const warning = confidence < lowConfidenceThreshold
-        ? '置信度较低，建议人工确认'
-        : null;
-
-      info('food-recognition', '识别成功', {
-        name: recognitionResult.name,
-        category: recognitionResult.category,
-        confidence,
-        warning,
-      }, userId);
-
+  try {
+    // 处理用户纠错
+    if (correction) {
+      const { imageHash, originalResult, correctedResult } = correction;
+      await recordCorrection(userId, imageHash, originalResult, correctedResult);
       return {
         errCode: 0,
         errMsg: 'success',
+        data: { message: '纠错已记录' },
+      };
+    }
+
+    // 参数验证
+    if (!fileID && !base64Image) {
+      return {
+        errCode: -1,
+        errMsg: 'fileID或base64Image必须提供其一',
+        data: null,
+      };
+    }
+
+    // 获取图片URL
+    let imageUrl;
+    if (fileID) {
+      const tempUrlResult = await cloud.getTempFileURL({
+        fileList: [fileID],
+      });
+
+      if (!tempUrlResult.fileList || tempUrlResult.fileList.length === 0) {
+        throw new Error('获取图片URL失败');
+      }
+
+      imageUrl = tempUrlResult.fileList[0].tempFileURL;
+    } else if (base64Image) {
+      // 对于base64图片，这里简化处理，实际项目中可能需要先上传到云存储
+      throw new Error('暂不支持base64图片');
+    }
+
+    // 调用百度智能云菜品识别API
+    let recognitionResult;
+    try {
+      recognitionResult = await recognizeImageWithBaidu(imageUrl);
+    } catch (err) {
+      console.error('API调用失败，使用模拟数据:', err);
+      // API调用失败时使用模拟数据作为降级方案
+      recognitionResult = await recognizeWithMock(imageUrl);
+    }
+
+    // 置信度检查
+    const confidence = recognitionResult.confidence || 0.8;
+    const minConfidence = config.recognition.minConfidence || 0.6;
+    const lowConfidenceThreshold = config.recognition.lowConfidenceThreshold || 0.7;
+
+    if (confidence < minConfidence) {
+      return {
+        errCode: -4,
+        errMsg: '识别失败，置信度过低',
         data: {
           name: recognitionResult.name,
           category: recognitionResult.category,
           confidence,
-          warning,
-          imageHash, // 返回hash用于纠错
+          warning: '置信度过低，结果可能不准确',
         },
       };
-    } catch (err) {
-      error('food-recognition', '菜品识别失败', err, userId);
-      return {
-        errCode: -1,
-        errMsg: err.message || '识别失败',
-        data: null,
-      };
     }
-  }, { userId });
+
+    // 低置信度警告
+    const warning = confidence < lowConfidenceThreshold
+      ? '置信度较低，建议人工确认'
+      : null;
+
+    return {
+      errCode: 0,
+      errMsg: 'success',
+      data: {
+        name: recognitionResult.name,
+        category: recognitionResult.category,
+        confidence,
+        warning,
+      },
+    };
+  } catch (err) {
+    console.error('识别失败:', err);
+    return {
+      errCode: -999,
+      errMsg: '识别失败',
+      data: null,
+    };
+  }
 };

@@ -3,8 +3,10 @@
  */
 import { cloudEnvId } from '../../config/env.js';
 import { addData, dbCollections } from '../../utils/db.js';
-import { showToast, showLoading, hideLoading, formatDate } from '../../utils/util.js';
-import { callCloudFunction, cloudFunctions } from '../../utils/request.js';
+import { showToast, showLoading, hideLoading } from '../../utils/util.js';
+import { formatDate } from '../../utils/date.js';
+import { callCloudFunction } from '../../utils/request.js';
+import { cloudFunctions } from '../../config/api.js';
 
 Page({
   /**
@@ -25,7 +27,41 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {},
+  onLoad(options) {
+    // 检查相机权限
+    this.checkCameraPermission();
+  },
+
+  /**
+   * 检查相机权限
+   */
+  checkCameraPermission() {
+    wx.getSetting({
+      success: (res) => {
+        if (!res.authSetting['scope.camera']) {
+          wx.authorize({
+            scope: 'scope.camera',
+            success: () => {
+              console.log('相机权限授权成功');
+            },
+            fail: () => {
+              showToast('需要相机权限才能拍照', 'none');
+              // 引导用户打开权限设置
+              setTimeout(() => {
+                wx.openSetting({
+                  success: (res) => {
+                    if (res.authSetting['scope.camera']) {
+                      console.log('用户在设置中开启了相机权限');
+                    }
+                  }
+                });
+              }, 1000);
+            }
+          });
+        }
+      }
+    });
+  },
 
   /**
    * 选择图片
@@ -50,30 +86,38 @@ Page({
   },
 
   /**
-   * 拍照
+   * 拍照（使用camera组件）
    */
-  takePhoto() {
+  takePhotoWithCamera() {
     this.setData({ takingPhoto: true });
     
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['camera'],
+    const ctx = wx.createCameraContext();
+    ctx.takePhoto({
+      quality: 'high',
       success: (res) => {
-        const tempFilePath = res.tempFilePaths[0];
+        const tempFilePath = res.tempImagePath;
         this.setData({
           imagePath: tempFilePath,
           recognitionResult: null,
         });
+        showToast('拍照成功', 'success');
       },
       fail: (err) => {
         console.error('拍照失败:', err);
-        showToast('拍照失败', 'none');
+        showToast('拍照失败，请重试', 'none');
       },
       complete: () => {
         this.setData({ takingPhoto: false });
       },
     });
+  },
+
+  /**
+   * 相机错误处理
+   */
+  onCameraError(e) {
+    console.error('相机错误:', e.detail);
+    showToast('相机初始化失败，请检查相机权限', 'none');
   },
 
   /**
@@ -112,20 +156,12 @@ Page({
       });
 
       // 调用云函数进行图片识别
-      // 这里预留接口，实际需要实现图片识别云函数
-      // const result = await callCloudFunction(cloudFunctions.imageRecognition, {
-      //   fileID: uploadResult.fileID,
-      // });
-
-      // 模拟识别结果（实际应该从云函数返回）
-      const mockResult = {
-        name: '西红柿',
-        category: '蔬菜',
-        confidence: 0.95,
-      };
+      const result = await callCloudFunction('food-recognition', {
+        fileID: uploadResult.fileID,
+      });
 
       this.setData({
-        recognitionResult: mockResult,
+        recognitionResult: result,
       });
 
       showToast('识别成功', 'success');

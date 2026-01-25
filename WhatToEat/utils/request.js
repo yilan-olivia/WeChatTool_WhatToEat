@@ -142,6 +142,11 @@ export const callCloudFunction = async (name, data = {}, options = {}) => {
       throw new Error(result.result.errMsg || '云函数调用失败');
     }
 
+    // 如果云函数返回了data字段，返回data字段的内容
+    if (result.result && result.result.data) {
+      return result.result.data;
+    }
+
     return result.result;
   } catch (err) {
     if (needLoading) {

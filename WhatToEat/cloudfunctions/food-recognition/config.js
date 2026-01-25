@@ -6,20 +6,19 @@ module.exports = {
   // AI API配置
   aiApi: {
     // API类型：openai, baidu-qianfan, ali-bailian等
-    type: process.env.AI_API_TYPE || 'openai',
+    type: 'baidu-vision',
     // API基础地址
-    baseUrl: process.env.AI_API_BASE_URL || 'https://api.openai.com/v1',
-    // API密钥（从环境变量获取）
-    apiKey: process.env.AI_API_KEY || '',
-    // 百度千帆配置
-    clientId: process.env.BAIDU_CLIENT_ID || '',
-    clientSecret: process.env.BAIDU_CLIENT_SECRET || '',
-    // 模型名称
-    model: process.env.AI_MODEL || 'gpt-4-vision-preview',
+    baseUrl: 'https://aip.baidubce.com',
+    // API密钥
+    apiKey: 'ADsAgUKrzrVd4qW54V4UCs4x',
+    // Secret Key
+    secretKey: '4DaShhYbUZIpAyx7jtf7aak22v0CSQ1Q',
+    // 菜品识别接口路径
+    dishRecognitionPath: '/rest/2.0/image-classify/v2/dish',
+    // 获取access_token接口路径
+    accessTokenPath: '/oauth/2.0/token',
     // 请求超时时间（毫秒）
     timeout: 30000,
-    // 降级方案（按顺序尝试）
-    fallbackTypes: process.env.AI_FALLBACK_TYPES ? process.env.AI_FALLBACK_TYPES.split(',') : [],
   },
 
   // 图片处理配置
