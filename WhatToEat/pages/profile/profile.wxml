@@ -1,32 +1,30 @@
 <!-- 个人中心页 -->
 <view class="container">
   <!-- 用户信息卡片 -->
-  <view class="user-card">
-    <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
-    <view class="user-info">
-      <text class="user-name">{{userInfo.nickName || '未登录'}}</text>
-      <text class="user-desc" wx:if="{{userInfo.nickName}}">点击完善个人信息</text>
-      <text class="user-desc" wx:else>点击登录</text>
+  <view class="user-card" bindtap="onUserInfoTap">
+    <view class="user-avatar-wrapper">
+      <image 
+        class="user-avatar" 
+        wx:if="{{isLogin && userInfo.avatarUrl}}" 
+        src="{{userInfo.avatarUrl}}" 
+        mode="aspectFill"
+      ></image>
+      <view class="user-avatar-placeholder" wx:else>
+        <text class="avatar-placeholder-icon">👤</text>
+      </view>
     </view>
-    <view class="user-action" bindtap="onUserInfoTap">
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickName || '点击登录'}}</text>
+      <text class="user-desc" wx:if="{{isLogin && userInfo.nickName}}">点击更换头像和昵称</text>
+      <text class="user-desc" wx:else>点击选择登录方式</text>
+    </view>
+    <view class="user-action">
       <text class="action-icon">></text>
     </view>
   </view>
 
   <!-- 功能菜单 -->
   <view class="menu-section">
-    <view class="menu-item" bindtap="navigateToFoodManage">
-      <view class="menu-icon">📝</view>
-      <text class="menu-text">我的菜品</text>
-      <text class="menu-badge" wx:if="{{foodCount > 0}}">{{foodCount}}</text>
-      <text class="menu-arrow">></text>
-    </view>
-    <view class="menu-item" bindtap="navigateToRecipes">
-      <view class="menu-icon">🍳</view>
-      <text class="menu-text">我的食谱</text>
-      <text class="menu-badge" wx:if="{{recipeCount > 0}}">{{recipeCount}}</text>
-      <text class="menu-arrow">></text>
-    </view>
     <view class="menu-item" bindtap="navigateToReport">
       <view class="menu-icon">📊</view>
       <text class="menu-text">健康报告</text>
@@ -36,14 +34,14 @@
 
   <!-- 设置菜单 -->
   <view class="menu-section">
+    <view class="menu-item" bindtap="navigateToCollectedRecipes">
+      <view class="menu-icon">⭐</view>
+      <text class="menu-text">食谱收藏</text>
+      <text class="menu-arrow">></text>
+    </view>
     <view class="menu-item" bindtap="onSettingsTap">
       <view class="menu-icon">⚙️</view>
       <text class="menu-text">设置</text>
-      <text class="menu-arrow">></text>
-    </view>
-    <view class="menu-item" bindtap="onAboutTap">
-      <view class="menu-icon">ℹ️</view>
-      <text class="menu-text">关于我们</text>
       <text class="menu-arrow">></text>
     </view>
   </view>
@@ -56,3 +54,33 @@
 
 <!-- 加载组件 -->
 <loading show="{{loading}}" text="加载中..."></loading>
+
+<!-- 昵称编辑弹窗 -->
+<view class="nickname-modal" wx:if="{{showNicknameModal}}" catchtap="closeNicknameModal">
+  <view class="nickname-modal-content" catchtap="stopPropagation">
+    <view class="nickname-modal-header">
+      <text class="nickname-modal-title">更换昵称</text>
+      <text class="nickname-modal-close" bindtap="closeNicknameModal">×</text>
+    </view>
+    <view class="nickname-modal-body">
+      <input 
+        class="nickname-input" 
+        type="text" 
+        placeholder="请输入新的昵称"
+        placeholder-class="nickname-input-placeholder"
+        value="{{nicknameInput}}"
+        maxlength="20"
+        bindinput="onNicknameInput"
+        bindconfirm="confirmNickname"
+        confirm-type="done"
+        bindtap="stopPropagation"
+      />
+      <view class="nickname-tip">昵称最多20个字符</view>
+    </view>
+    <view class="nickname-modal-footer">
+      <button class="nickname-btn nickname-btn-cancel" bindtap="closeNicknameModal">取消</button>
+      <button class="nickname-btn nickname-btn-confirm" bindtap="confirmNickname">确定</button>
+    </view>
+  </view>
+</view>
+

@@ -163,11 +163,7 @@ Page({
       this.setData({
         recognitionResult: result,
       });
-
-      showToast('识别成功', 'success');
-    } catch (err) {
-      console.error('识别失败:', err);
-      showToast('识别失败，请重试', 'none');
+      showToast('识别失败，使用默认结果', 'none');
     } finally {
       this.setData({ 
         recognizing: false,
@@ -261,3 +257,4 @@ Page({
     }
   },
 });
+

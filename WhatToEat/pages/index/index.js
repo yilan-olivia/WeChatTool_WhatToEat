@@ -3,6 +3,7 @@
  */
 import { queryData, countData, dbCollections, dbCommand } from '../../utils/db.js';
 import { showToast } from '../../utils/util.js';
+import { setCache, getCache, removeCache } from '../../utils/cache.js';
 
 const app = getApp();
 
@@ -36,8 +37,15 @@ Page({
   /**
    * 下拉刷新
    */
-  onPullDownRefresh() {
-    this.loadData().finally(() => {
+  async onPullDownRefresh() {
+    // 清除缓存，确保获取最新数据
+    await Promise.all([
+      removeCache('food_count'),
+      removeCache('recipe_count'),
+      removeCache('expiring_count'),
+      removeCache('recent_foods'),
+    ]);
+    await this.loadData().finally(() => {
       wx.stopPullDownRefresh();
     });
   },
@@ -49,8 +57,8 @@ Page({
     this.setData({ loading: true });
 
     try {
-      // 并行加载统计数据
-      await Promise.all([
+      // 并行加载统计数据，即使某个失败也不影响其他数据
+      await Promise.allSettled([
         this.loadFoodCount(),
         this.loadRecipeCount(),
         this.loadExpiringCount(),
@@ -58,7 +66,7 @@ Page({
       ]);
     } catch (err) {
       console.error('加载数据失败:', err);
-      showToast('加载失败，请重试', 'none');
+      // 不显示错误提示，避免影响用户体验
     } finally {
       this.setData({ loading: false });
     }
@@ -69,10 +77,20 @@ Page({
    */
   async loadFoodCount() {
     try {
-      const count = await countData(dbCollections.foods);
+      // 尝试从缓存获取
+      const cachedCount = await getCache('food_count');
+      if (cachedCount) {
+        this.setData({ foodCount: cachedCount });
+        return;
+      }
+
+      const count = await countData(dbCollections.foods, { isDeleted: false });
       this.setData({ foodCount: count });
+      // 缓存数据，过期时间5分钟
+      await setCache('food_count', count, 5 * 60 * 1000);
     } catch (err) {
       console.error('加载菜品总数失败:', err);
+      this.setData({ foodCount: 0 });
     }
   },
 
@@ -81,30 +99,53 @@ Page({
    */
   async loadRecipeCount() {
     try {
-      const count = await countData(dbCollections.recipes);
+      // 尝试从缓存获取
+      const cachedCount = await getCache('recipe_count');
+      if (cachedCount) {
+        this.setData({ recipeCount: cachedCount });
+        return;
+      }
+
+      const count = await countData(dbCollections.recipes, { isDeleted: false });
       this.setData({ recipeCount: count });
+      // 缓存数据，过期时间5分钟
+      await setCache('recipe_count', count, 5 * 60 * 1000);
     } catch (err) {
       console.error('加载食谱数量失败:', err);
+      this.setData({ recipeCount: 0 });
     }
   },
 
   /**
-   * 加载即将过期数量
+   * 加载即将过期的菜品数量
    */
   async loadExpiringCount() {
     try {
-      // 查询3天内过期的菜品
+      // 尝试从缓存获取
+      const cachedCount = await getCache('expiring_count');
+      if (cachedCount) {
+        this.setData({ expiringCount: cachedCount });
+        return;
+      }
+
       const now = new Date();
-      const threeDaysLater = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-      
-      const foods = await queryData(dbCollections.foods, {
-        expireDate: dbCommand.lte(threeDaysLater),
-        status: dbCommand.neq('expired'),
-      });
-      
-      this.setData({ expiringCount: foods.length });
+      const threeDaysLater = new Date();
+      threeDaysLater.setDate(now.getDate() + 3);
+
+      const expiringFoods = await queryData(
+        dbCollections.foods,
+        {
+          expireDate: dbCommand.gte(now).and(dbCommand.lte(threeDaysLater)),
+          isDeleted: false,
+        }
+      );
+
+      this.setData({ expiringCount: expiringFoods.length });
+      // 缓存数据，过期时间10分钟
+      await setCache('expiring_count', expiringFoods.length, 10 * 60 * 1000);
     } catch (err) {
-      console.error('加载即将过期数量失败:', err);
+      console.error('加载即将过期菜品失败:', err);
+      this.setData({ expiringCount: 0 });
     }
   },
 
@@ -113,17 +154,28 @@ Page({
    */
   async loadRecentFoods() {
     try {
-      const foods = await queryData(
+      // 尝试从缓存获取
+      const cachedFoods = await getCache('recent_foods');
+      if (cachedFoods) {
+        this.setData({ recentFoods: cachedFoods });
+        return;
+      }
+
+      const recentFoods = await queryData(
         dbCollections.foods,
-        {},
+        { isDeleted: false },
         {
           orderBy: { field: 'createTime', order: 'desc' },
-          limit: 5,
+          limit: 5
         }
       );
-      this.setData({ recentFoods: foods });
+
+      this.setData({ recentFoods });
+      // 缓存数据，过期时间5分钟
+      await setCache('recent_foods', recentFoods, 5 * 60 * 1000);
     } catch (err) {
       console.error('加载最近菜品失败:', err);
+      this.setData({ recentFoods: [] });
     }
   },
 
@@ -181,3 +233,5 @@ Page({
     console.log('点击菜品:', food);
   },
 });
+
+

@@ -1,0 +1,201 @@
+/* 发布食谱页样式 */
+.container {
+  min-height: 100vh;
+  padding: var(--spacing-md);
+  background-color: var(--bg-color);
+}
+
+/* 输入区域 */
+.input-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  position: relative;
+}
+
+.input-label {
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.title-input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  border: 1rpx solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.content-input {
+  width: 100%;
+  min-height: 200rpx;
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  line-height: 1.6;
+  resize: none;
+  border: 1rpx solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.char-count {
+  position: absolute;
+  bottom: var(--spacing-sm);
+  right: var(--spacing-md);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+/* 类型选择区域 */
+.type-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.type-selectors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.type-selector-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.type-label {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  flex-shrink: 0;
+  width: 140rpx;
+}
+
+.picker-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--bg-gray);
+  border-radius: var(--border-radius);
+  margin-left: var(--spacing-md);
+}
+
+.picker-text {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.picker-arrow {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+/* 图片选择区域 */
+.images-section {
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.images-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.image-item {
+  position: relative;
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+}
+
+.image-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40rpx;
+  height: 40rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-icon {
+  color: #ffffff;
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+}
+
+.add-image {
+  background-color: var(--bg-gray);
+  border: 2rpx dashed var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-icon {
+  font-size: var(--font-size-xl);
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.add-text {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+/* 操作按钮 */
+.action-section {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.btn {
+  flex: 1;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn-secondary {
+  background-color: var(--bg-gray);
+  color: var(--text-primary);
+  border: 2rpx solid var(--border-color);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: 2rpx solid var(--primary-color);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+}

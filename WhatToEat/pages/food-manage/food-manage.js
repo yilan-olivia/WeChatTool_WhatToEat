@@ -1,8 +1,8 @@
 /**
  * 菜品管理页
  */
-import { queryData, dbCollections } from '../../utils/db.js';
-import { showToast, showModal } from '../../utils/util.js';
+import { queryData, deleteData, dbCollections } from '../../utils/db.js';
+import { showToast, showModal, showSuccess, showError } from '../../utils/util.js';
 
 Page({
   /**
@@ -88,7 +88,7 @@ Page({
       });
     } catch (err) {
       console.error('加载菜品失败:', err);
-      showToast('加载失败，请重试', 'none');
+      showError('加载失败，请重试');
     } finally {
       this.setData({ 
         loading: false,
@@ -157,8 +157,40 @@ Page({
    */
   onFoodTap(e) {
     const { food } = e.detail;
-    // 可以跳转到菜品详情或编辑页
-    console.log('点击菜品:', food);
+    // 跳转到菜品编辑页
+    wx.navigateTo({
+      url: `/pages/food-edit/food-edit?id=${food._id}`,
+    });
+  },
+
+  /**
+   * 菜品卡片长按
+   */
+  async onFoodLongPress(e) {
+    const { food } = e.detail;
+    
+    // 显示确认删除对话框
+    const result = await showModal(
+      `确定要删除菜品「${food.name}」吗？`,
+      '删除确认',
+      {
+        confirmText: '删除',
+        cancelText: '取消',
+      }
+    );
+    
+    if (!result.confirm) return;
+
+    try {
+      // 删除菜品
+      await deleteData(dbCollections.foods, food._id);
+      showSuccess('删除成功');
+      // 刷新列表
+      this.refreshList();
+    } catch (err) {
+      console.error('删除菜品失败:', err);
+      showError('删除失败，请重试');
+    }
   },
 
   /**
@@ -167,6 +199,14 @@ Page({
   navigateToCameraScan() {
     wx.navigateTo({
       url: '/pages/camera-scan/camera-scan',
+    });
+  },
+  /**
+   * 导航到菜品编辑页（添加新菜品）
+   */
+  navigateToFoodEdit() {
+    wx.navigateTo({
+      url: '/pages/food-edit/food-edit',
     });
   },
 });

@@ -1,0 +1,91 @@
+<!-- 食谱列表页 -->
+<view class="container">
+  <scroll-view 
+    class="scroll-view" 
+    scroll-y 
+    refresher-enabled="{{true}}"
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onRefresh"
+    bindscrolltolower="onLoadMore"
+  >
+    <!-- 热门食谱 -->
+    <view class="hot-section" wx:if="{{hotRecipes.length > 0}}">
+      <view class="section-title">热门食谱</view>
+      <scroll-view class="hot-scroll" scroll-x>
+        <view class="hot-list">
+          <view 
+            class="hot-item" 
+            wx:for="{{hotRecipes}}" 
+            wx:key="_id"
+            bindtap="onRecipeTap"
+            data-id="{{item._id}}"
+          >
+            <image 
+              class="hot-image" 
+              src="{{item.images && item.images[0] || '/images/default-food.png'}}" 
+              mode="aspectFill"
+            ></image>
+            <view class="hot-info">
+              <text class="hot-title">{{item.title}}</text>
+              <view class="hot-stats">
+                <text class="hot-like">👍 {{item.likeCount || 0}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 所有食谱列表 -->
+    <view class="recipes-section">
+      <view class="section-title">全部食谱</view>
+      <view class="recipes-list" wx:if="{{recipes.length > 0}}">
+        <view 
+          class="recipe-item" 
+          wx:for="{{recipes}}" 
+          wx:key="_id"
+          bindtap="onRecipeTap"
+          data-id="{{item._id}}"
+        >
+          <image 
+            class="recipe-image" 
+            src="{{item.images && item.images[0] || '/images/default-food.png'}}" 
+            mode="aspectFill"
+          ></image>
+          <view class="recipe-info">
+            <view class="recipe-header">
+              <text class="recipe-title">{{item.title}}</text>
+              <view class="recipe-tags">
+                <text class="recipe-tag" wx:if="{{item.typeValue}}">{{item.typeValue}}</text>
+              </view>
+            </view>
+            <view class="recipe-stats">
+              <text class="recipe-stat">👍 {{item.likeCount || 0}}</text>
+              <text class="recipe-stat">⭐ {{item.collectCount || 0}}</text>
+              <text class="recipe-time">{{item.createTime}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <empty wx:else text="暂无食谱，快来发布第一条吧~" show-action="{{true}}">
+        <view slot="action">
+          <button class="btn btn-primary" bindtap="navigateToPublish">发布食谱</button>
+        </view>
+      </empty>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{recipes.length > 0}}">
+      <text wx:if="{{loadingMore}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">没有更多了</text>
+    </view>
+  </scroll-view>
+
+  <!-- 发布按钮 -->
+  <view class="fab" bindtap="navigateToPublish">
+    <text class="fab-icon">+</text>
+  </view>
+</view>
+
+<!-- 加载组件 -->
+<loading show="{{loading}}" text="加载中..."></loading>

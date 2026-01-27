@@ -52,5 +52,14 @@ Component({
         food: this.data.food,
       });
     },
+
+    /**
+     * 卡片长按事件
+     */
+    onCardLongPress() {
+      this.triggerEvent('longpress', {
+        food: this.data.food,
+      });
+    },
   },
 });

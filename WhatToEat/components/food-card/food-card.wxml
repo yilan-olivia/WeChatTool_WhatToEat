@@ -1,7 +1,12 @@
 <!-- 菜品卡片组件 -->
-<view class="food-card" bindtap="onCardTap">
+<view class="food-card" bindtap="onCardTap" bindlongpress="onCardLongPress">
   <view class="food-image-wrapper">
-    <image class="food-image" src="{{food.image || '/images/default-food.png'}}" mode="aspectFill"></image>
+    <image 
+      class="food-image" 
+      src="{{food.image || '/images/default-food.png'}}" 
+      mode="aspectFill"
+      lazy-load="{{true}}"
+    ></image>
     <view class="food-badge" wx:if="{{food.category}}">{{food.category}}</view>
   </view>
   <view class="food-info">

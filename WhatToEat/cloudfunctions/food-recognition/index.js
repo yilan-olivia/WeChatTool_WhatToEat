@@ -3,6 +3,9 @@
  * 调用AI API识别菜品图片，支持多服务商、缓存、置信度处理
  */
 
+// 加载环境变量
+require('dotenv').config();
+
 const cloud = require('wx-server-sdk');
 const https = require('https');
 const querystring = require('querystring');
@@ -269,7 +272,6 @@ exports.main = async (event, context) => {
         },
       };
     }
-
     // 低置信度警告
     const warning = confidence < lowConfidenceThreshold
       ? '置信度较低，建议人工确认'

@@ -1,8 +1,8 @@
 /**
- * 社区动态页
+ * 社区主页 - 显示食谱列表
  */
-import { queryData, updateData, dbCollections } from '../../utils/db.js';
-import { showToast, formatRelativeTime } from '../../utils/util.js';
+import { showToast } from '../../utils/util.js';
+import { formatDate } from '../../utils/date.js';
 
 Page({
   /**
@@ -12,9 +12,10 @@ Page({
     loading: false,
     refreshing: false,
     loadingMore: false,
-    posts: [], // 动态列表
+    hotRecipes: [], // 热门食谱Top5
+    recipes: [], // 食谱列表
     page: 1, // 当前页码
-    pageSize: 10, // 每页数量
+    pageSize: 20, // 每页数量
     hasMore: true, // 是否还有更多数据
   },
 
@@ -22,7 +23,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.loadPosts();
+    this.loadData();
   },
 
   /**
@@ -34,15 +35,15 @@ Page({
   },
 
   /**
-   * 加载动态列表
+   * 加载数据
    */
-  async loadPosts(reset = false) {
+  async loadData(reset = false) {
     if (this.data.loading || this.data.loadingMore) return;
 
     if (reset) {
       this.setData({
         page: 1,
-        posts: [],
+        recipes: [],
         hasMore: true,
       });
     }
@@ -53,29 +54,26 @@ Page({
     });
 
     try {
-      const posts = await queryData(
-        dbCollections.community,
-        {},
-        {
-          orderBy: { field: 'createTime', order: 'desc' },
-          limit: this.data.pageSize,
-          skip: (this.data.page - 1) * this.data.pageSize,
-        }
-      );
+      // 并行加载热门食谱和所有食谱
+      const [hotResult, listResult] = await Promise.all([
+        this.loadHotRecipes(),
+        this.loadRecipesList(),
+      ]);
 
       // 格式化时间
-      const formattedPosts = posts.map(post => ({
-        ...post,
-        createTime: formatRelativeTime(post.createTime),
+      const formattedRecipes = listResult.map(recipe => ({
+        ...recipe,
+        createTime: this.formatTime(recipe.createTime),
       }));
 
       this.setData({
-        posts: reset ? formattedPosts : [...this.data.posts, ...formattedPosts],
-        hasMore: posts.length === this.data.pageSize,
+        hotRecipes: hotResult,
+        recipes: reset ? formattedRecipes : [...this.data.recipes, ...formattedRecipes],
+        hasMore: listResult.length === this.data.pageSize,
         page: this.data.page + 1,
       });
     } catch (err) {
-      console.error('加载动态失败:', err);
+      console.error('加载数据失败:', err);
       showToast('加载失败，请重试', 'none');
     } finally {
       this.setData({ 
@@ -86,10 +84,74 @@ Page({
   },
 
   /**
+   * 加载热门食谱Top5
+   */
+  async loadHotRecipes() {
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'community',
+        data: {
+          action: 'getHotRecipes',
+        },
+      });
+
+      if (result.result && result.result.errCode === 0) {
+        return result.result.data || [];
+      }
+      return [];
+    } catch (err) {
+      console.error('加载热门食谱失败:', err);
+      return [];
+    }
+  },
+
+  /**
+   * 加载食谱列表
+   */
+  async loadRecipesList() {
+    try {
+      const db = wx.cloud.database();
+      const result = await db.collection('recipes')
+        .where({
+          isDeleted: false,
+          isPublic: true,
+        })
+        .orderBy('createTime', 'desc')
+        .skip((this.data.page - 1) * this.data.pageSize)
+        .limit(this.data.pageSize)
+        .get();
+
+      return result.data || [];
+    } catch (err) {
+      console.error('加载食谱列表失败:', err);
+      return [];
+    }
+  },
+
+  /**
+   * 格式化时间
+   */
+  formatTime(time) {
+    if (!time) return '';
+    const date = new Date(time);
+    const now = new Date();
+    const diff = now - date;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return '刚刚';
+    if (minutes < 60) return `${minutes}分钟前`;
+    if (hours < 24) return `${hours}小时前`;
+    if (days < 7) return `${days}天前`;
+    return formatDate(date, 'YYYY-MM-DD');
+  },
+
+  /**
    * 刷新列表
    */
   refreshList() {
-    this.loadPosts(true);
+    this.loadData(true);
   },
 
   /**
@@ -97,7 +159,7 @@ Page({
    */
   onRefresh() {
     this.setData({ refreshing: true });
-    this.loadPosts(true).finally(() => {
+    this.loadData(true).finally(() => {
       this.setData({ refreshing: false });
     });
   },
@@ -107,72 +169,17 @@ Page({
    */
   onLoadMore() {
     if (this.data.hasMore && !this.data.loadingMore) {
-      this.loadPosts();
+      this.loadData();
     }
   },
 
   /**
-   * 动态点击
+   * 点击食谱项
    */
-  onPostTap(e) {
-    const { post } = e.currentTarget.dataset;
-    // 可以跳转到动态详情页
-    console.log('点击动态:', post);
-  },
-
-  /**
-   * 点赞
-   */
-  async onLike(e) {
-    const { id, index } = e.currentTarget.dataset;
-    const post = this.data.posts[index];
-
-    try {
-      // 更新点赞数
-      await updateData(dbCollections.community, id, {
-        likeCount: (post.likeCount || 0) + 1,
-      });
-
-      // 更新本地数据
-      const posts = [...this.data.posts];
-      posts[index].likeCount = (post.likeCount || 0) + 1;
-      this.setData({ posts });
-
-      showToast('点赞成功', 'success');
-    } catch (err) {
-      console.error('点赞失败:', err);
-      showToast('操作失败', 'none');
-    }
-  },
-
-  /**
-   * 评论
-   */
-  onComment(e) {
+  onRecipeTap(e) {
     const { id } = e.currentTarget.dataset;
-    // 可以跳转到评论页或显示评论弹窗
-    console.log('评论:', id);
-  },
-
-  /**
-   * 分享
-   */
-  onShare(e) {
-    const { id } = e.currentTarget.dataset;
-    // 调用微信分享功能
-    wx.showShareMenu({
-      withShareTicket: true,
-    });
-  },
-
-  /**
-   * 预览图片
-   */
-  previewImage(e) {
-    const { urls, current } = e.currentTarget.dataset;
-    wx.previewImage({
-      urls,
-      current,
+    wx.navigateTo({
+      url: `/pages/community/detail?id=${id}`,
     });
   },
 
@@ -180,11 +187,8 @@ Page({
    * 导航到发布页
    */
   navigateToPublish() {
-    // 可以跳转到发布动态页
-    wx.showModal({
-      title: '提示',
-      content: '发布功能开发中...',
-      showCancel: false,
+    wx.navigateTo({
+      url: '/pages/community/publish',
     });
   },
 });

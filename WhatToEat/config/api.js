@@ -36,4 +36,6 @@ export const cloudFunctions = {
   login: 'login', // 登录云函数
   aiRecipe: 'ai-recipe', // AI食谱生成云函数
   imageRecognition: 'food-recognition', // 图片识别云函数
+  community: 'community', // 社区云函数
+  reportGenerate: 'report-generate', // 报告生成云函数
 };
