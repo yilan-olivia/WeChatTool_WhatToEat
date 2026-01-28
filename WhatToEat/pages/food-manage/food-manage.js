@@ -156,11 +156,21 @@ Page({
    * 菜品卡片点击
    */
   onFoodTap(e) {
+    console.log('onFoodTap triggered:', e);
     const { food } = e.detail;
-    // 跳转到菜品编辑页
-    wx.navigateTo({
-      url: `/pages/food-edit/food-edit?id=${food._id}`,
-    });
+    console.log('Food data:', food);
+    if (food && food._id) {
+      // 跳转到菜品编辑页
+      wx.navigateTo({
+        url: `/pages/food-edit/food-edit?id=${food._id}`,
+      });
+    } else {
+      console.error('Food data is invalid:', food);
+      wx.showToast({
+        title: '菜品数据错误',
+        icon: 'error'
+      });
+    }
   },
 
   /**
@@ -201,6 +211,7 @@ Page({
       url: '/pages/camera-scan/camera-scan',
     });
   },
+
   /**
    * 导航到菜品编辑页（添加新菜品）
    */

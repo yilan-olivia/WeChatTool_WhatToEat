@@ -78,28 +78,47 @@
 /* 悬浮添加按钮 */
 .fab {
   position: fixed;
-  right: var(--spacing-md);
-  bottom: 120rpx;
-  width: 100rpx;
-  height: 100rpx;
-  background-color: var(--primary-color);
+  bottom: 80rpx;
+  right: 30rpx;
+  width: 80rpx;
+  height: 80rpx;
+  background-color: #4CAF50;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.4);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
   z-index: 100;
   transition: all 0.3s ease;
 }
 
 .fab:active {
-  transform: scale(0.9);
-  box-shadow: 0 2rpx 6rpx rgba(7, 193, 96, 0.3);
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
 }
 
 .fab-icon {
-  color: #ffffff;
   font-size: 48rpx;
+  color: white;
   font-weight: bold;
-  line-height: 1;
+}
+
+/* 加载组件样式 */
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 32rpx;
+  color: #333;
 }

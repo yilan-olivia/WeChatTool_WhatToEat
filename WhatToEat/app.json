@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/food-manage/food-manage",
+    "pages/food-edit/food-edit",
     "pages/camera-scan/camera-scan",
     "pages/recipe-generate/recipe-generate",
     "pages/community/community",

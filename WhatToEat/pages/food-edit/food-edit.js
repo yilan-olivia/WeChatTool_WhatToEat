@@ -2,7 +2,7 @@
  * 菜品编辑页
  * 用于添加和编辑菜品
  */
-import { addData, updateData, getDataById, dbCollections } from '../../utils/db.js';
+import { addData, updateData, getDataById, deleteData, dbCollections } from '../../utils/db.js';
 import { showToast, showModal } from '../../utils/util.js';
 
 Page({
@@ -86,8 +86,9 @@ Page({
    * 分类选择
    */
   onCategoryChange(e) {
+    const index = e.detail.value;
     this.setData({
-      'food.category': e.detail.value,
+      'food.category': this.data.categories[index],
     });
   },
 
@@ -95,8 +96,9 @@ Page({
    * 单位选择
    */
   onUnitChange(e) {
+    const index = e.detail.value;
     this.setData({
-      'food.unit': e.detail.value,
+      'food.unit': this.data.units[index],
     });
   },
 
@@ -140,13 +142,18 @@ Page({
     this.setData({ loading: true });
 
     try {
+      // 复制food对象并移除_id和_openid字段（如果存在）
+      const foodData = { ...this.data.food };
+      delete foodData._id;
+      delete foodData._openid;
+      
       if (this.data.isEdit) {
         // 更新菜品
-        await updateData(dbCollections.foods, this.data.foodId, this.data.food);
+        await updateData(dbCollections.foods, this.data.foodId, foodData);
         showToast('更新成功', 'success');
       } else {
         // 添加新菜品
-        await addData(dbCollections.foods, this.data.food);
+        await addData(dbCollections.foods, foodData);
         showToast('添加成功', 'success');
       }
       wx.navigateBack();
@@ -164,25 +171,21 @@ Page({
   async deleteFood() {
     if (!this.data.isEdit) return;
 
-    showModal({
-      title: '确认删除',
-      content: '确定要删除这个菜品吗？',
-      success: async (res) => {
-        if (res.confirm) {
-          this.setData({ loading: true });
-          try {
-            // 这里应该使用deleteData函数，暂时先模拟
-            // await deleteData(dbCollections.foods, this.data.foodId);
-            showToast('删除成功', 'success');
-            wx.navigateBack();
-          } catch (err) {
-            console.error('删除菜品失败:', err);
-            showToast('删除失败，请重试', 'none');
-          } finally {
-            this.setData({ loading: false });
-          }
+    showModal('确定要删除这个菜品吗？', '确认删除').then(async (res) => {
+      if (res.confirm) {
+        this.setData({ loading: true });
+        try {
+          // 使用deleteData函数删除菜品
+          await deleteData(dbCollections.foods, this.data.foodId);
+          showToast('删除成功', 'success');
+          wx.navigateBack();
+        } catch (err) {
+          console.error('删除菜品失败:', err);
+          showToast('删除失败，请重试', 'none');
+        } finally {
+          this.setData({ loading: false });
         }
-      },
+      }
     });
   },
 });
