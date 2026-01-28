@@ -86,7 +86,7 @@ Page({
    * 分类选择
    */
   onCategoryChange(e) {
-    const index = e.detail.value;
+    const index = Number(e.detail.value);
     this.setData({
       'food.category': this.data.categories[index],
     });
@@ -96,7 +96,7 @@ Page({
    * 单位选择
    */
   onUnitChange(e) {
-    const index = e.detail.value;
+    const index = Number(e.detail.value);
     this.setData({
       'food.unit': this.data.units[index],
     });

@@ -163,7 +163,18 @@ Page({
       this.setData({
         recognitionResult: result,
       });
+      showToast('识别成功', 'success');
+    } catch (err) {
+      console.error('识别失败:', err);
       showToast('识别失败，使用默认结果', 'none');
+      // 使用默认识别结果
+      this.setData({
+        recognitionResult: {
+          name: '未知菜品',
+          category: '其他',
+          confidence: 0.8
+        }
+      });
     } finally {
       this.setData({ 
         recognizing: false,
@@ -257,4 +268,5 @@ Page({
     }
   },
 });
+
 
