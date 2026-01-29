@@ -180,6 +180,9 @@ Page({
         if (!userId) {
           showToast('请先登录', 'none');
           this.setData({ loading: false });
+          setTimeout(() => {
+            wx.switchTab({ url: '/pages/profile/profile' });
+          }, 1500);
           return;
         }
         await addData(dbCollections.foods, { ...foodData, userId, isDeleted: false });
@@ -200,6 +203,15 @@ Page({
    */
   async deleteFood() {
     if (!this.data.isEdit) return;
+
+    const userId = await this.getUserId();
+    if (!userId) {
+      showToast('请先登录', 'none');
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/profile/profile' });
+      }, 1500);
+      return;
+    }
 
     showModal('确定要删除这个菜品吗？', '确认删除').then(async (res) => {
       if (res.confirm) {
