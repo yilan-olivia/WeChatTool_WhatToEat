@@ -22,7 +22,7 @@
           >
             <image 
               class="hot-image" 
-              src="{{item.images && item.images[0] || '/images/default-food.png'}}" 
+              src="{{item.images && item.images[0] || '/images/default_food.jpg'}}" 
               mode="aspectFill"
             ></image>
             <view class="hot-info">
@@ -49,9 +49,7 @@
         >
           <image 
             class="recipe-image" 
-            src="{{item.images && item.images[0] || '/images/default-food.png'}}" 
-            mode="aspectFill"
-          ></image>
+            src="{{item.images && item.images[0] || '/images/default_food.jpg'}}" mode="aspectFill"></image>
           <view class="recipe-info">
             <view class="recipe-header">
               <text class="recipe-title">{{item.title}}</text>

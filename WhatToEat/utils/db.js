@@ -32,7 +32,8 @@ export const addData = async (collectionName, data) => {
     const result = await db.collection(collectionName).add({
       data: {
         ...data,
-        createTime: db.serverDate(), // 服务器时间
+        isDeleted: false,
+        createTime: db.serverDate(),
         updateTime: db.serverDate(),
       },
     });
@@ -142,6 +143,33 @@ export const countData = async (collectionName, where = {}) => {
     return result.total;
   } catch (err) {
     console.error('统计数量失败:', err);
+    throw err;
+  }
+};
+
+/**
+ * 通过云函数获取统计数据
+ * @param {string} action 操作类型：countFoods, countRecipes, countExpiringFoods, getRecentFoods, getAll
+ * @param {Object} options 选项参数：days, limit
+ * @returns {Promise<any>} 返回统计结果
+ */
+export const getStatistics = async (action, options = {}) => {
+  try {
+    const result = await wx.cloud.callFunction({
+      name: 'statistics',
+      data: {
+        action,
+        ...options,
+      },
+    });
+
+    if (result.result.errCode !== 0) {
+      throw new Error(result.result.errMsg || '获取统计数据失败');
+    }
+
+    return result.result.data;
+  } catch (err) {
+    console.error('获取统计数据失败:', err);
     throw err;
   }
 };

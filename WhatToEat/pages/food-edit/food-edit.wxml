@@ -3,7 +3,7 @@
   <!-- 图片上传 -->
   <view class="image-upload">
     <view class="upload-area" bindtap="chooseImage">
-      <image class="food-image" src="{{food.image || '/images/default-food.png'}}" mode="aspectFill"></image>
+      <image class="food-image" src="{{food.image || '/images/default_food.jpg'}}" mode="aspectFill"></image>
       <view class="upload-overlay">
         <text class="upload-text">点击上传图片</text>
       </view>

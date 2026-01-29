@@ -4,6 +4,7 @@
  */
 import { addData, updateData, getDataById, deleteData, dbCollections } from '../../utils/db.js';
 import { showToast, showModal } from '../../utils/util.js';
+import { removeCache } from '../../utils/cache.js';
 
 Page({
   /**
@@ -133,7 +134,6 @@ Page({
    * 保存菜品
    */
   async saveFood() {
-    // 表单验证
     if (!this.data.food.name) {
       showToast('请输入菜品名称', 'none');
       return;
@@ -142,20 +142,24 @@ Page({
     this.setData({ loading: true });
 
     try {
-      // 复制food对象并移除_id和_openid字段（如果存在）
       const foodData = { ...this.data.food };
       delete foodData._id;
       delete foodData._openid;
       
       if (this.data.isEdit) {
-        // 更新菜品
         await updateData(dbCollections.foods, this.data.foodId, foodData);
         showToast('更新成功', 'success');
       } else {
-        // 添加新菜品
         await addData(dbCollections.foods, foodData);
         showToast('添加成功', 'success');
       }
+
+      await Promise.all([
+        removeCache('food_count'),
+        removeCache('expiring_count'),
+        removeCache('recent_foods'),
+      ]);
+
       wx.navigateBack();
     } catch (err) {
       console.error('保存菜品失败:', err);
@@ -175,9 +179,15 @@ Page({
       if (res.confirm) {
         this.setData({ loading: true });
         try {
-          // 使用deleteData函数删除菜品
           await deleteData(dbCollections.foods, this.data.foodId);
           showToast('删除成功', 'success');
+
+          await Promise.all([
+            removeCache('food_count'),
+            removeCache('expiring_count'),
+            removeCache('recent_foods'),
+          ]);
+
           wx.navigateBack();
         } catch (err) {
           console.error('删除菜品失败:', err);

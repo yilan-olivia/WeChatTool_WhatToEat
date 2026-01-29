@@ -3,7 +3,7 @@
   <view class="food-image-wrapper">
     <image 
       class="food-image" 
-      src="{{food.image || '/images/default-food.png'}}" 
+      src="{{food.image || '/images/default_food.jpg'}}" 
       mode="aspectFill"
       lazy-load="{{true}}"
     ></image>

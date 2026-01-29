@@ -47,6 +47,9 @@ Page({
         }
       );
 
+      console.log('加载的菜品数据:', foods);
+      console.log('第一个菜品的ID:', foods[0]?._id);
+      
       this.setData({ availableFoods: foods });
     } catch (err) {
       console.error('加载菜品失败:', err);
@@ -61,6 +64,10 @@ Page({
    */
   toggleFood(e) {
     const id = e.currentTarget.dataset.id;
+    console.log('点击的菜品ID:', id);
+    console.log('当前选中的菜品:', this.data.selectedFoods);
+    console.log('可用菜品列表:', this.data.availableFoods);
+    
     const selectedFoods = [...this.data.selectedFoods];
     const index = selectedFoods.indexOf(id);
 
@@ -71,6 +78,7 @@ Page({
     }
 
     this.setData({ selectedFoods });
+    console.log('更新后的选中菜品:', selectedFoods);
   },
 
   /**
@@ -99,7 +107,7 @@ Page({
     try {
       // 获取选中的菜品信息
       const selectedFoodsData = this.data.availableFoods.filter(food =>
-        this.data.selectedFoods.includes(food.id)
+        this.data.selectedFoods.includes(food._id)
       );
 
       // 调用云函数生成食谱
@@ -154,7 +162,7 @@ Page({
       console.error('生成食谱失败:', err);
       // 出错时使用模拟数据
       const selectedFoodsData = this.data.availableFoods.filter(food =>
-        this.data.selectedFoods.includes(food.id)
+        this.data.selectedFoods.includes(food._id)
       );
 
       const mockRecipe = {
@@ -284,5 +292,8 @@ Page({
     });
   },
 });
+
+
+
 
 

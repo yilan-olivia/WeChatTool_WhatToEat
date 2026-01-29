@@ -7,6 +7,7 @@ import { showToast, showLoading, hideLoading } from '../../utils/util.js';
 import { formatDate } from '../../utils/date.js';
 import { callCloudFunction } from '../../utils/request.js';
 import { cloudFunctions } from '../../config/api.js';
+import { removeCache } from '../../utils/cache.js';
 
 Page({
   /**
@@ -221,7 +222,6 @@ Page({
     });
 
     try {
-      // 上传图片到云存储（如果还没有上传）
       let imageUrl = this.data.imagePath;
       if (!imageUrl.startsWith('cloud://')) {
         const cloudPath = `food-images/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
@@ -232,7 +232,6 @@ Page({
         imageUrl = uploadResult.fileID;
       }
 
-      // 计算状态（根据保质期）
       const expireDate = new Date(this.data.expireDate);
       const now = new Date();
       const daysDiff = Math.floor((expireDate - now) / (1000 * 60 * 60 * 24));
@@ -244,7 +243,6 @@ Page({
         status = 'warning';
       }
 
-      // 保存到数据库
       await addData(dbCollections.foods, {
         name: this.data.recognitionResult.name,
         category: this.data.recognitionResult.category || '其他',
@@ -254,9 +252,14 @@ Page({
         status,
       });
 
+      await Promise.all([
+        removeCache('food_count'),
+        removeCache('expiring_count'),
+        removeCache('recent_foods'),
+      ]);
+
       showToast('保存成功', 'success');
 
-      // 延迟返回上一页
       setTimeout(() => {
         wx.navigateBack();
       }, 1500);
