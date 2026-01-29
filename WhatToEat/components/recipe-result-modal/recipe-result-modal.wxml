@@ -1,0 +1,77 @@
+<!-- 食谱结果展示模态组件 -->
+<view class="modal-overlay {{show ? 'show' : ''}}" bindtap="closeModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <!-- 标题栏 -->
+    <view class="modal-header">
+      <text class="modal-title">生成的食谱</text>
+      <text class="modal-close" bindtap="closeModal">✕</text>
+    </view>
+
+    <!-- 食谱内容 -->
+    <scroll-view class="recipe-scroll" scroll-y wx:if="{{recipe}}">
+      <!-- 食谱名称 -->
+      <view class="recipe-name">{{recipe.name}}</view>
+
+      <!-- 基本信息 -->
+      <view class="recipe-info">
+        <view class="info-item" wx:if="{{recipe.difficulty}}">
+          <text class="info-label">难度：</text>
+          <text class="info-value">{{recipe.difficulty}}</text>
+        </view>
+        <view class="info-item" wx:if="{{recipe.time}}">
+          <text class="info-label">时间：</text>
+          <text class="info-value">{{recipe.time}}</text>
+        </view>
+        <view class="info-item" wx:if="{{recipe.calories || (recipe.nutrition && recipe.nutrition.calories)}}">
+          <text class="info-label">热量：</text>
+          <text class="info-value">{{recipe.calories || recipe.nutrition.calories}} 卡</text>
+        </view>
+      </view>
+
+      <!-- 食材列表 -->
+      <view class="recipe-section" wx:if="{{formattedIngredients.length > 0}}">
+        <view class="section-title">食材清单</view>
+        <view class="ingredients-list">
+          <view
+            class="ingredient-item"
+            wx:for="{{formattedIngredients}}"
+            wx:key="index"
+          >
+            <text class="ingredient-index">{{item.index}}.</text>
+            <text class="ingredient-name">{{item.name}}</text>
+            <text class="ingredient-amount" wx:if="{{item.amount}}">{{item.amount}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 制作步骤 -->
+      <view class="recipe-section" wx:if="{{formattedSteps.length > 0}}">
+        <view class="section-title">制作步骤</view>
+        <view class="steps-list">
+          <view
+            class="step-item"
+            wx:for="{{formattedSteps}}"
+            wx:key="index"
+          >
+            <view class="step-number">{{item.index}}</view>
+            <view class="step-content">
+              <text class="step-text">{{item.text}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 营养信息 -->
+      <view class="recipe-section" wx:if="{{nutritionData.length > 0}}">
+        <view class="section-title">营养信息</view>
+        <nutrition-bar nutrition-data="{{nutritionData}}" show-percentage="{{false}}"></nutrition-bar>
+      </view>
+    </scroll-view>
+
+    <!-- 底部操作栏 -->
+    <view class="modal-footer">
+      <button class="btn btn-secondary" bindtap="closeModal">关闭</button>
+      <button class="btn btn-primary" bindtap="saveRecipe">保存食谱</button>
+    </view>
+  </view>
+</view>

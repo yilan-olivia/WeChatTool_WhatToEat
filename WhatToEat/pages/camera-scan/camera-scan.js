@@ -7,6 +7,7 @@ import { showToast, showLoading, hideLoading } from '../../utils/util.js';
 import { formatDate } from '../../utils/date.js';
 import { callCloudFunction } from '../../utils/request.js';
 import { cloudFunctions } from '../../config/api.js';
+import { removeCache } from '../../utils/cache.js';
 
 Page({
   /**
@@ -22,6 +23,27 @@ Page({
     expireDate: '', // 保质期
     remark: '', // 备注
     minDate: formatDate(new Date(), 'YYYY-MM-DD'), // 最小日期（今天）
+  },
+
+  async getUserId() {
+    const app = getApp();
+    const userId = app.globalData.openid;
+    if (userId) return userId;
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'user-login',
+        data: { action: 'login', userInfo: {} },
+      });
+      const data = result?.result?.data;
+      const openid = data?._id || data?.openid || null;
+      if (openid) {
+        app.globalData.openid = openid;
+        return openid;
+      }
+    } catch (err) {
+      console.error('获取用户ID失败:', err);
+    }
+    return null;
   },
 
   /**
@@ -246,15 +268,18 @@ Page({
 
       // 保存到数据库
       await addData(dbCollections.foods, {
+        userId: await this.getUserId(),
         name: this.data.recognitionResult.name,
         category: this.data.recognitionResult.category || '其他',
         image: imageUrl,
         expireDate: this.data.expireDate,
         remark: this.data.remark,
         status,
+        isDeleted: false,
       });
 
       showToast('保存成功', 'success');
+      await removeCache('food_count');
 
       // 延迟返回上一页
       setTimeout(() => {

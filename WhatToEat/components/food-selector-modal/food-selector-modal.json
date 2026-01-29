@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "food-card": "../food-card/food-card"
+  }
+}

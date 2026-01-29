@@ -1,0 +1,223 @@
+/* 食谱结果展示模态组件样式 */
+
+/* 遮罩层 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: var(--spacing-md);
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 模态内容 */
+.modal-content {
+  width: 100%;
+  max-width: 680rpx;
+  max-height: 85vh;
+  background-color: var(--bg-white);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+  transform: scale(1);
+}
+
+/* 标题栏 */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border-bottom: 1rpx solid var(--border-color);
+}
+
+.modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  font-size: 40rpx;
+  color: var(--text-tertiary);
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 食谱内容滚动区 */
+.recipe-scroll {
+  flex: 1;
+  padding: var(--spacing-md);
+}
+
+/* 食谱名称 */
+.recipe-name {
+  font-size: var(--font-size-xl);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+/* 基本信息 */
+.recipe-info {
+  display: flex;
+  justify-content: space-around;
+  padding: var(--spacing-md) 0;
+  margin-bottom: var(--spacing-md);
+  background-color: var(--bg-gray);
+  border-radius: var(--border-radius);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.info-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.info-value {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+/* 章节样式 */
+.recipe-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 2rpx solid var(--primary-color);
+}
+
+/* 食材列表 */
+.ingredients-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background-color: var(--bg-gray);
+  border-radius: var(--border-radius);
+}
+
+.ingredient-index {
+  font-size: var(--font-size-sm);
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-right: var(--spacing-sm);
+  min-width: 40rpx;
+}
+
+.ingredient-name {
+  flex: 1;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.ingredient-amount {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-left: var(--spacing-sm);
+}
+
+/* 制作步骤 */
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.step-item {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.step-number {
+  width: 48rpx;
+  height: 48rpx;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+  padding-top: var(--spacing-xs);
+}
+
+.step-text {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  line-height: 1.8;
+}
+
+/* 底部操作栏 */
+.modal-footer {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border-top: 1rpx solid var(--border-color);
+  background-color: var(--bg-white);
+}
+
+.modal-footer .btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  border: none;
+}
+
+.btn-secondary {
+  background-color: var(--bg-gray);
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}

@@ -4,6 +4,7 @@
 import { queryData, countData, dbCollections, dbCommand } from '../../utils/db.js';
 import { showToast } from '../../utils/util.js';
 import { setCache, getCache, removeCache } from '../../utils/cache.js';
+import { callCloudFunction } from '../../utils/request.js';
 
 const app = getApp();
 
@@ -17,6 +18,26 @@ Page({
     recipeCount: 0, // 生成食谱数
     expiringCount: 0, // 即将过期数量
     recentFoods: [], // 最近添加的菜品
+  },
+
+  async getUserId() {
+    const userId = app.globalData.openid;
+    if (userId) return userId;
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'user-login',
+        data: { action: 'login', userInfo: {} },
+      });
+      const data = result?.result?.data;
+      const openid = data?._id || data?.openid || null;
+      if (openid) {
+        app.globalData.openid = openid;
+        return openid;
+      }
+    } catch (err) {
+      console.error('获取用户ID失败:', err);
+    }
+    return null;
   },
 
   /**
@@ -77,16 +98,18 @@ Page({
    */
   async loadFoodCount() {
     try {
-      // 尝试从缓存获取
-      const cachedCount = await getCache('food_count');
-      if (cachedCount) {
-        this.setData({ foodCount: cachedCount });
+      const userId = await this.getUserId();
+      if (!userId) {
+        this.setData({ foodCount: 0 });
         return;
       }
+      const cachedCount = await getCache('food_count');
+      if (cachedCount !== null && cachedCount !== undefined) {
+        this.setData({ foodCount: cachedCount });
+      }
 
-      const count = await countData(dbCollections.foods, { isDeleted: false });
+      const count = await countData(dbCollections.foods, { userId, isDeleted: false });
       this.setData({ foodCount: count });
-      // 缓存数据，过期时间5分钟
       await setCache('food_count', count, 5 * 60 * 1000);
     } catch (err) {
       console.error('加载菜品总数失败:', err);
@@ -99,16 +122,19 @@ Page({
    */
   async loadRecipeCount() {
     try {
-      // 尝试从缓存获取
+      const userId = await this.getUserId();
+      if (!userId) {
+        this.setData({ recipeCount: 0 });
+        return;
+      }
       const cachedCount = await getCache('recipe_count');
       if (cachedCount) {
         this.setData({ recipeCount: cachedCount });
         return;
       }
 
-      const count = await countData(dbCollections.recipes, { isDeleted: false });
+      const count = await countData(dbCollections.recipes, { userId, isDeleted: false });
       this.setData({ recipeCount: count });
-      // 缓存数据，过期时间5分钟
       await setCache('recipe_count', count, 5 * 60 * 1000);
     } catch (err) {
       console.error('加载食谱数量失败:', err);
@@ -121,7 +147,11 @@ Page({
    */
   async loadExpiringCount() {
     try {
-      // 尝试从缓存获取
+      const userId = await this.getUserId();
+      if (!userId) {
+        this.setData({ expiringCount: 0 });
+        return;
+      }
       const cachedCount = await getCache('expiring_count');
       if (cachedCount) {
         this.setData({ expiringCount: cachedCount });
@@ -135,6 +165,7 @@ Page({
       const expiringFoods = await queryData(
         dbCollections.foods,
         {
+          userId,
           expireDate: dbCommand.gte(now).and(dbCommand.lte(threeDaysLater)),
           isDeleted: false,
         }
@@ -154,7 +185,11 @@ Page({
    */
   async loadRecentFoods() {
     try {
-      // 尝试从缓存获取
+      const userId = await this.getUserId();
+      if (!userId) {
+        this.setData({ recentFoods: [] });
+        return;
+      }
       const cachedFoods = await getCache('recent_foods');
       if (cachedFoods) {
         this.setData({ recentFoods: cachedFoods });
@@ -163,7 +198,7 @@ Page({
 
       const recentFoods = await queryData(
         dbCollections.foods,
-        { isDeleted: false },
+        { userId, isDeleted: false },
         {
           orderBy: { field: 'createTime', order: 'desc' },
           limit: 5
