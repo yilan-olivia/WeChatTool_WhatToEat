@@ -20,6 +20,7 @@ Page({
     takingPhoto: false, // 是否正在拍照
     recognizing: false, // 是否正在识别
     recognitionResult: null, // 识别结果
+    cloudImageId: '', // 云存储图片ID
     expireDate: '', // 保质期
     remark: '', // 备注
     minDate: formatDate(new Date(), 'YYYY-MM-DD'), // 最小日期（今天）
@@ -97,6 +98,7 @@ Page({
         const tempFilePath = res.tempFilePaths[0];
         this.setData({
           imagePath: tempFilePath,
+          cloudImageId: '', // 重置云图片ID
           recognitionResult: null, // 清除之前的识别结果
         });
       },
@@ -115,11 +117,12 @@ Page({
     
     const ctx = wx.createCameraContext();
     ctx.takePhoto({
-      quality: 'high',
+      quality: 'normal',
       success: (res) => {
         const tempFilePath = res.tempImagePath;
         this.setData({
           imagePath: tempFilePath,
+          cloudImageId: '', // 重置云图片ID
           recognitionResult: null,
         });
         showToast('拍照成功', 'success');
@@ -148,6 +151,7 @@ Page({
   removeImage() {
     this.setData({
       imagePath: '',
+      cloudImageId: '',
       recognitionResult: null,
       expireDate: '',
       remark: '',
@@ -176,6 +180,8 @@ Page({
         cloudPath,
         filePath: this.data.imagePath,
       });
+
+      this.setData({ cloudImageId: uploadResult.fileID });
 
       // 调用云函数进行图片识别
       const result = await callCloudFunction('food-recognition', {
@@ -244,14 +250,19 @@ Page({
 
     try {
       // 上传图片到云存储（如果还没有上传）
-      let imageUrl = this.data.imagePath;
-      if (!imageUrl.startsWith('cloud://')) {
-        const cloudPath = `food-images/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
-        const uploadResult = await wx.cloud.uploadFile({
-          cloudPath,
-          filePath: this.data.imagePath,
-        });
-        imageUrl = uploadResult.fileID;
+      let imageUrl = this.data.cloudImageId;
+      if (!imageUrl) {
+        if (!this.data.imagePath.startsWith('cloud://')) {
+          const cloudPath = `food-images/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
+          const uploadResult = await wx.cloud.uploadFile({
+            cloudPath,
+            filePath: this.data.imagePath,
+          });
+          imageUrl = uploadResult.fileID;
+          this.setData({ cloudImageId: imageUrl });
+        } else {
+          imageUrl = this.data.imagePath;
+        }
       }
 
       // 计算状态（根据保质期）
