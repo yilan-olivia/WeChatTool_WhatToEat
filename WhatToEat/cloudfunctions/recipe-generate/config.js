@@ -5,10 +5,11 @@
 module.exports = {
   // AI API配置
   aiApi: {
-    type: process.env.AI_API_TYPE || 'openai',
-    baseUrl: process.env.AI_API_BASE_URL || 'https://api.openai.com/v1',
-    apiKey: process.env.AI_API_KEY || '',
-    model: process.env.AI_MODEL || 'gpt-4',
+    type: process.env.AI_API_TYPE || 'baidu',
+    baseUrl: process.env.AI_API_BASE_URL || '',
+    apiKey: process.env.AI_API_KEY || 'FGr3bm1CuoNMzYoq6N2k7bnz',
+    secretKey: process.env.AI_API_SECRET_KEY || '7e39VsqCRowDdm6XYXY0En4jc3EfdwXY',
+    model: process.env.AI_MODEL || 'ernie-bot-turbo',
     timeout: 60000, // 食谱生成可能需要更长时间
   },
 
