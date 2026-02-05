@@ -5,6 +5,7 @@
 import { addData, updateData, getDataById, deleteData, dbCollections } from '../../utils/db.js';
 import { showToast, showModal } from '../../utils/util.js';
 import { removeCache } from '../../utils/cache.js';
+import { callCloudFunction } from '../../utils/request.js';
 
 Page({
   /**
@@ -26,6 +27,27 @@ Page({
     },
     categories: ['蔬菜', '水果', '肉类', '海鲜', '调料', '其他'],
     units: ['克', '千克', '个', '包', '瓶', '盒', '斤'],
+  },
+
+  async getUserId() {
+    const app = getApp();
+    const userId = app.globalData.openid;
+    if (userId) return userId;
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'user-login',
+        data: { action: 'login', userInfo: {} },
+      });
+      const data = result?.result?.data;
+      const openid = data?._id || data?.openid || null;
+      if (openid) {
+        app.globalData.openid = openid;
+        return openid;
+      }
+    } catch (err) {
+      console.error('获取用户ID失败:', err);
+    }
+    return null;
   },
 
   /**
@@ -150,8 +172,19 @@ Page({
         await updateData(dbCollections.foods, this.data.foodId, foodData);
         showToast('更新成功', 'success');
       } else {
-        await addData(dbCollections.foods, foodData);
+        // 添加新菜品
+        const userId = await this.getUserId();
+        if (!userId) {
+          showToast('请先登录', 'none');
+          this.setData({ loading: false });
+          setTimeout(() => {
+            wx.switchTab({ url: '/pages/profile/profile' });
+          }, 1500);
+          return;
+        }
+        await addData(dbCollections.foods, { ...foodData, userId, isDeleted: false });
         showToast('添加成功', 'success');
+        await removeCache('food_count');
       }
 
       await Promise.all([
@@ -175,19 +208,22 @@ Page({
   async deleteFood() {
     if (!this.data.isEdit) return;
 
+    const userId = await this.getUserId();
+    if (!userId) {
+      showToast('请先登录', 'none');
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/profile/profile' });
+      }, 1500);
+      return;
+    }
+
     showModal('确定要删除这个菜品吗？', '确认删除').then(async (res) => {
       if (res.confirm) {
         this.setData({ loading: true });
         try {
           await deleteData(dbCollections.foods, this.data.foodId);
           showToast('删除成功', 'success');
-
-          await Promise.all([
-            removeCache('food_count'),
-            removeCache('expiring_count'),
-            removeCache('recent_foods'),
-          ]);
-
+          await removeCache('food_count');
           wx.navigateBack();
         } catch (err) {
           console.error('删除菜品失败:', err);

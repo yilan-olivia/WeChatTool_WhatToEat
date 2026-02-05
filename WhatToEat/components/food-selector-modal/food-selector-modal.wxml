@@ -1,0 +1,81 @@
+<!-- 菜品选择模态组件 -->
+<view class="modal-overlay {{show ? 'show' : ''}}" bindtap="closeModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <!-- 标题栏 -->
+    <view class="modal-header">
+      <text class="modal-title">选择菜品</text>
+      <text class="modal-close" bindtap="closeModal">✕</text>
+    </view>
+
+    <!-- 搜索框 -->
+    <view class="search-section">
+      <input
+        class="search-input"
+        placeholder="搜索菜品名称..."
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+      />
+    </view>
+
+    <!-- 分类筛选 -->
+    <view class="category-section">
+      <scroll-view class="category-scroll" scroll-x>
+        <view class="category-list">
+          <view
+            class="category-item {{selectedCategory === item ? 'active' : ''}}"
+            wx:for="{{categories}}"
+            wx:key="*this"
+            bindtap="selectCategory"
+            data-category="{{item}}"
+          >
+            {{item}}
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 菜品列表 -->
+    <scroll-view class="foods-list" scroll-y>
+      <view class="foods-grid" wx:if="{{filteredFoods.length > 0}}">
+        <view
+          class="food-item {{selectedFoodIds.includes(item._id || item.id) ? 'selected' : ''}}"
+          wx:for="{{filteredFoods}}"
+          wx:key="_id"
+          bindtap="toggleFood"
+          data-id="{{item._id || item.id}}"
+        >
+          <view class="food-checkbox">
+            <text class="checkbox-icon" wx:if="{{selectedFoodIds.includes(item._id || item.id)}}">✓</text>
+          </view>
+          <view class="food-image-wrapper">
+            <image
+              class="food-image"
+              src="{{item.image || '/images/default-food.png'}}"
+              mode="aspectFill"
+            ></image>
+          </view>
+          <view class="food-name">{{item.name}}</view>
+        </view>
+      </view>
+      <view class="empty-state" wx:else>
+        <text class="empty-text">暂无菜品</text>
+      </view>
+    </scroll-view>
+
+    <!-- 底部操作栏 -->
+    <view class="modal-footer">
+      <view class="selected-count">
+        已选择 {{selectedFoodIds.length}} 个菜品
+      </view>
+      <view class="footer-actions">
+        <button class="btn btn-cancel" bindtap="cancelSelection">取消</button>
+        <button class="btn btn-confirm" bindtap="confirmSelection">确认</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 加载提示 -->
+<view class="loading-overlay" wx:if="{{loading}}">
+  <text class="loading-text">加载中...</text>
+</view>

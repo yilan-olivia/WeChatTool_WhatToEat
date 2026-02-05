@@ -21,6 +21,27 @@ Page({
     nutritionData: [], // 营养数据
   },
 
+  async getUserId() {
+    const app = getApp();
+    const userId = app.globalData.openid;
+    if (userId) return userId;
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'user-login',
+        data: { action: 'login', userInfo: {} },
+      });
+      const data = result?.result?.data;
+      const openid = data?._id || data?.openid || null;
+      if (openid) {
+        app.globalData.openid = openid;
+        return openid;
+      }
+    } catch (err) {
+      console.error('获取用户ID失败:', err);
+    }
+    return null;
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -34,12 +55,24 @@ Page({
   async loadAvailableFoods() {
     this.setData({ loading: true });
 
+    const userId = await this.getUserId();
+    if (!userId) {
+      this.setData({ availableFoods: [], loading: false });
+      showToast('请先登录', 'none');
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/profile/profile' });
+      }, 1500);
+      return;
+    }
+
     try {
       // 查询未过期的菜品
       const now = new Date();
       const foods = await queryData(
         dbCollections.foods,
         {
+          userId,
+          isDeleted: false,
           status: dbCommand.neq('expired'),
         },
         {
@@ -204,6 +237,15 @@ Page({
       return;
     }
 
+    const userId = await this.getUserId();
+    if (!userId) {
+      showToast('请先登录', 'none');
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/profile/profile' });
+      }, 1500);
+      return;
+    }
+
     this.setData({ 
       loading: true,
       loadingText: '保存中...',
@@ -212,6 +254,8 @@ Page({
     try {
       await addData(dbCollections.recipes, {
         ...this.data.generatedRecipe,
+        userId,
+        isDeleted: false,
         foodIds: this.data.selectedFoods,
         preference: this.data.preference,
       });

@@ -20,9 +20,31 @@ Page({
     takingPhoto: false, // 是否正在拍照
     recognizing: false, // 是否正在识别
     recognitionResult: null, // 识别结果
+    cloudImageId: '', // 云存储图片ID
     expireDate: '', // 保质期
     remark: '', // 备注
     minDate: formatDate(new Date(), 'YYYY-MM-DD'), // 最小日期（今天）
+  },
+
+  async getUserId() {
+    const app = getApp();
+    const userId = app.globalData.openid;
+    if (userId) return userId;
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'user-login',
+        data: { action: 'login', userInfo: {} },
+      });
+      const data = result?.result?.data;
+      const openid = data?._id || data?.openid || null;
+      if (openid) {
+        app.globalData.openid = openid;
+        return openid;
+      }
+    } catch (err) {
+      console.error('获取用户ID失败:', err);
+    }
+    return null;
   },
 
   /**
@@ -76,6 +98,7 @@ Page({
         const tempFilePath = res.tempFilePaths[0];
         this.setData({
           imagePath: tempFilePath,
+          cloudImageId: '', // 重置云图片ID
           recognitionResult: null, // 清除之前的识别结果
         });
       },
@@ -94,11 +117,12 @@ Page({
     
     const ctx = wx.createCameraContext();
     ctx.takePhoto({
-      quality: 'high',
+      quality: 'normal',
       success: (res) => {
         const tempFilePath = res.tempImagePath;
         this.setData({
           imagePath: tempFilePath,
+          cloudImageId: '', // 重置云图片ID
           recognitionResult: null,
         });
         showToast('拍照成功', 'success');
@@ -127,6 +151,7 @@ Page({
   removeImage() {
     this.setData({
       imagePath: '',
+      cloudImageId: '',
       recognitionResult: null,
       expireDate: '',
       remark: '',
@@ -155,6 +180,8 @@ Page({
         cloudPath,
         filePath: this.data.imagePath,
       });
+
+      this.setData({ cloudImageId: uploadResult.fileID });
 
       // 调用云函数进行图片识别
       const result = await callCloudFunction('food-recognition', {
@@ -222,14 +249,20 @@ Page({
     });
 
     try {
-      let imageUrl = this.data.imagePath;
-      if (!imageUrl.startsWith('cloud://')) {
-        const cloudPath = `food-images/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
-        const uploadResult = await wx.cloud.uploadFile({
-          cloudPath,
-          filePath: this.data.imagePath,
-        });
-        imageUrl = uploadResult.fileID;
+      // 上传图片到云存储（如果还没有上传）
+      let imageUrl = this.data.cloudImageId;
+      if (!imageUrl) {
+        if (!this.data.imagePath.startsWith('cloud://')) {
+          const cloudPath = `food-images/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
+          const uploadResult = await wx.cloud.uploadFile({
+            cloudPath,
+            filePath: this.data.imagePath,
+          });
+          imageUrl = uploadResult.fileID;
+          this.setData({ cloudImageId: imageUrl });
+        } else {
+          imageUrl = this.data.imagePath;
+        }
       }
 
       const expireDate = new Date(this.data.expireDate);
@@ -244,12 +277,14 @@ Page({
       }
 
       await addData(dbCollections.foods, {
+        userId: await this.getUserId(),
         name: this.data.recognitionResult.name,
         category: this.data.recognitionResult.category || '其他',
         image: imageUrl,
         expireDate: this.data.expireDate,
         remark: this.data.remark,
         status,
+        isDeleted: false,
       });
 
       await Promise.all([
@@ -259,6 +294,7 @@ Page({
       ]);
 
       showToast('保存成功', 'success');
+      await removeCache('food_count');
 
       setTimeout(() => {
         wx.navigateBack();

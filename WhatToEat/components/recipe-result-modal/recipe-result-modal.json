@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "nutrition-bar": "../nutrition-bar/nutrition-bar"
+  }
+}

@@ -1,8 +1,9 @@
 /**
  * 菜品管理页
  */
-import { queryData, deleteData, dbCollections } from '../../utils/db.js';
+import { queryData, deleteData, updateData, dbCollections, dbCommand } from '../../utils/db.js';
 import { showToast, showModal, showSuccess, showError } from '../../utils/util.js';
+import { removeCache } from '../../utils/cache.js';
 
 Page({
   /**
@@ -57,7 +58,21 @@ Page({
 
     try {
       // 构建查询条件
-      const where = {};
+      const app = getApp();
+      let userId = app.globalData.openid;
+      if (!userId) {
+        try {
+          const result = await wx.cloud.callFunction({
+            name: 'user-login',
+            data: { action: 'login', userInfo: {} },
+          });
+          const data = result?.result?.data;
+          userId = data?._id || data?.openid || null;
+          if (userId) app.globalData.openid = userId;
+        } catch (e) {}
+      }
+      const where = { isDeleted: false };
+      if (userId) where.userId = userId;
       
       // 搜索条件
       if (this.data.searchKeyword) {
@@ -193,8 +208,9 @@ Page({
 
     try {
       // 删除菜品
-      await deleteData(dbCollections.foods, food._id);
+      await updateData(dbCollections.foods, food._id, { isDeleted: true });
       showSuccess('删除成功');
+      await removeCache('food_count');
       // 刷新列表
       this.refreshList();
     } catch (err) {
