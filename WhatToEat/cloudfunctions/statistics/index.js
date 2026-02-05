@@ -23,6 +23,7 @@ async function countFoods(userId) {
     const result = await db
       .collection(config.collections.foods)
       .where({
+        userId: userId,
         isDeleted: _.neq(true),
       })
       .count();
@@ -43,6 +44,7 @@ async function countRecipes(userId) {
     const result = await db
       .collection(config.collections.recipes)
       .where({
+        userId: userId,
         isDeleted: _.neq(true),
       })
       .count();
@@ -65,11 +67,15 @@ async function countExpiringFoods(userId, days = 3) {
     const endDate = new Date();
     endDate.setDate(now.getDate() + days);
 
+    const nowStr = formatDate(now, 'YYYY-MM-DD');
+    const endDateStr = formatDate(endDate, 'YYYY-MM-DD');
+
     const result = await db
       .collection(config.collections.foods)
       .where({
+        userId: userId,
         isDeleted: _.neq(true),
-        expireDate: _.gte(now).and(_.lte(endDate)),
+        expireDate: _.gte(nowStr).and(_.lte(endDateStr)),
       })
       .count();
     return result.total || 0;
@@ -77,6 +83,40 @@ async function countExpiringFoods(userId, days = 3) {
     console.error('[statistics] 统计即将过期菜品数量失败:', err);
     throw err;
   }
+}
+
+function formatDate(date, format = 'YYYY-MM-DD') {
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return '';
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+
+  return format
+    .replace('YYYY', year)
+    .replace('MM', month)
+    .replace('DD', day);
+}
+
+// 测试函数
+function testDateComparison() {
+  const today = new Date('2026-02-06');
+  const tomorrow = new Date('2026-02-07');
+  const threeDaysLater = new Date('2026-02-09');
+  
+  const todayStr = formatDate(today, 'YYYY-MM-DD');
+  const tomorrowStr = formatDate(tomorrow, 'YYYY-MM-DD');
+  const threeDaysLaterStr = formatDate(threeDaysLater, 'YYYY-MM-DD');
+  
+  console.log('Test dates:');
+  console.log('Today:', todayStr);
+  console.log('Tomorrow:', tomorrowStr);
+  console.log('Three days later:', threeDaysLaterStr);
+  
+  // Test if tomorrow is between today and three days later
+  const isBetween = tomorrowStr >= todayStr && tomorrowStr <= threeDaysLaterStr;
+  console.log('Tomorrow is between today and three days later:', isBetween);
 }
 
 /**
@@ -90,6 +130,7 @@ async function getRecentFoods(userId, limit = 5) {
     const result = await db
       .collection(config.collections.foods)
       .where({
+        userId: userId,
         isDeleted: _.neq(true),
       })
       .orderBy('createTime', 'desc')
@@ -135,6 +176,9 @@ exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const userId = wxContext.OPENID;
   const { action, days, limit } = event;
+
+  // 测试日期比较逻辑
+  testDateComparison();
 
   console.log('[statistics] 请求参数:', { action, userId, days, limit });
 

@@ -122,17 +122,13 @@ Page({
    */
   async loadRecipeCount() {
     try {
-      const userId = await this.getUserId();
-      if (!userId) {
-        this.setData({ recipeCount: 0 });
-        return;
-      }
       const cachedCount = await getCache('recipe_count');
       if (cachedCount) {
         this.setData({ recipeCount: cachedCount });
         return;
       }
-      const count = await countData(dbCollections.recipes, { userId, isDeleted: false });
+
+      const count = await getStatistics('countRecipes');
       this.setData({ recipeCount: count });
       await setCache('recipe_count', count, 5 * 60 * 1000);
     } catch (err) {
@@ -146,33 +142,15 @@ Page({
    */
   async loadExpiringCount() {
     try {
-      const userId = await this.getUserId();
-      if (!userId) {
-        this.setData({ expiringCount: 0 });
-        return;
-      }
       const cachedCount = await getCache('expiring_count');
       if (cachedCount) {
         this.setData({ expiringCount: cachedCount });
         return;
       }
 
-      const now = new Date();
-      const threeDaysLater = new Date();
-      threeDaysLater.setDate(now.getDate() + 3);
-
-      const expiringFoods = await queryData(
-        dbCollections.foods,
-        {
-          userId,
-          expireDate: dbCommand.gte(now).and(dbCommand.lte(threeDaysLater)),
-          isDeleted: false,
-        }
-      );
-
-      this.setData({ expiringCount: expiringFoods.length });
-      // 缓存数据，过期时间10分钟
-      await setCache('expiring_count', expiringFoods.length, 10 * 60 * 1000);
+      const count = await getStatistics('countExpiringFoods', { days: 3 });
+      this.setData({ expiringCount: count });
+      await setCache('expiring_count', count, 10 * 60 * 1000);
     } catch (err) {
       console.error('加载即将过期菜品失败:', err);
       this.setData({ expiringCount: 0 });
@@ -184,25 +162,13 @@ Page({
    */
   async loadRecentFoods() {
     try {
-      const userId = await this.getUserId();
-      if (!userId) {
-        this.setData({ recentFoods: [] });
-        return;
-      }
       const cachedFoods = await getCache('recent_foods');
       if (cachedFoods) {
         this.setData({ recentFoods: cachedFoods });
         return;
       }
 
-      const recentFoods = await queryData(
-        dbCollections.foods,
-        { userId, isDeleted: false },
-        {
-          orderBy: { field: 'createTime', order: 'desc' },
-          limit: 5
-        }
-      );
+      const recentFoods = await getStatistics('getRecentFoods', { limit: 5 });
       this.setData({ recentFoods });
       await setCache('recent_foods', recentFoods, 5 * 60 * 1000);
     } catch (err) {
