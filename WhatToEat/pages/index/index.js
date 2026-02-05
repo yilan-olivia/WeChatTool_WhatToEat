@@ -50,9 +50,11 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow() {
+  async onShow() {
     // 每次显示时刷新数据
-    this.loadData();
+    console.log('[index] onShow - 开始刷新数据');
+    await this.loadData();
+    console.log('[index] onShow - 数据刷新完成');
   },
 
   /**
@@ -162,12 +164,9 @@ Page({
    */
   async loadRecentFoods() {
     try {
-      const cachedFoods = await getCache('recent_foods');
-      if (cachedFoods) {
-        this.setData({ recentFoods: cachedFoods });
-        return;
-      }
-
+      // 强制清除缓存，确保获取最新数据
+      await removeCache('recent_foods');
+      
       const recentFoods = await getStatistics('getRecentFoods', { limit: 5 });
       this.setData({ recentFoods });
       await setCache('recent_foods', recentFoods, 5 * 60 * 1000);

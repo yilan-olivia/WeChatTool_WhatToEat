@@ -169,10 +169,12 @@ Page({
       delete foodData._openid;
       
       if (this.data.isEdit) {
+        console.log('[food-edit] 开始更新菜品:', this.data.foodId);
         await updateData(dbCollections.foods, this.data.foodId, foodData);
+        console.log('[food-edit] 菜品更新成功，开始清除缓存');
         showToast('更新成功', 'success');
       } else {
-        // 添加新菜品
+        console.log('[food-edit] 开始添加新菜品');
         const userId = await this.getUserId();
         if (!userId) {
           showToast('请先登录', 'none');
@@ -183,19 +185,21 @@ Page({
           return;
         }
         await addData(dbCollections.foods, { ...foodData, userId, isDeleted: false });
+        console.log('[food-edit] 菜品添加成功，开始清除缓存');
         showToast('添加成功', 'success');
-        await removeCache('food_count');
       }
 
+      console.log('[food-edit] 开始清除所有相关缓存');
       await Promise.all([
         removeCache('food_count'),
         removeCache('expiring_count'),
         removeCache('recent_foods'),
       ]);
+      console.log('[food-edit] 缓存清除完成');
 
       wx.navigateBack();
     } catch (err) {
-      console.error('保存菜品失败:', err);
+      console.error('[food-edit] 保存菜品失败:', err);
       showToast('保存失败，请重试', 'none');
     } finally {
       this.setData({ loading: false });
