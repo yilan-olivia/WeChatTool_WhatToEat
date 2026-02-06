@@ -14,7 +14,7 @@ images/
 │   ├── profile.png
 │   └── profile-active.png
 ├── default-avatar.png    # 默认头像
-└── default-food.png      # 默认菜品图片
+└── default_food.jpg     # 默认菜品图片
 ```
 
 ## 图标要求
@@ -26,3 +26,4 @@ images/
 ## 说明
 
 请将实际的图标文件放置到对应目录中，替换占位文件。
+

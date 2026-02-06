@@ -10,7 +10,7 @@
     >
       <image 
         class="recipe-image" 
-        src="{{item.images && item.images[0] || '/images/default-food.png'}}" 
+        src="{{item.images && item.images[0] || '/images/default_food.jpg'}}" 
         mode="aspectFill"
       ></image>
       <view class="recipe-info">
@@ -32,3 +32,4 @@
 
 <!-- 加载组件 -->
 <loading show="{{loading}}" text="加载中..."></loading>
+

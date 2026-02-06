@@ -1,9 +1,10 @@
 /**
  * 健康报告页
  */
-import { queryData, countData, dbCollections, dbCommand } from '../../utils/db.js';
 import { showToast } from '../../utils/util.js';
 import { formatDate } from '../../utils/date.js';
+
+const app = getApp();
 
 Page({
   /**
@@ -26,18 +27,16 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // 初始化日期范围（默认最近7天）
     const today = new Date();
     const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
     
     this.setData({
       startDate: formatDate(sevenDaysAgo, 'YYYY-MM-DD'),
       endDate: formatDate(today, 'YYYY-MM-DD'),
-      minDate: '2020-01-01', // 可以根据实际情况设置
+      minDate: '2020-01-01',
       maxDate: formatDate(today, 'YYYY-MM-DD'),
     });
 
-    // 自动查询
     this.queryReport();
   },
 
@@ -71,117 +70,33 @@ Page({
     this.setData({ loading: true });
 
     try {
-      const startDate = new Date(this.data.startDate);
-      const endDate = new Date(this.data.endDate);
-      endDate.setHours(23, 59, 59, 999); // 设置为当天的最后一刻
-
-      // 并行查询各项数据
-      const [foods, recipes, expiredFoods] = await Promise.all([
-        this.loadFoodsInRange(startDate, endDate),
-        this.loadRecipesInRange(startDate, endDate),
-        this.loadExpiredFoodsInRange(startDate, endDate),
-      ]);
-
-      // 计算统计数据
-      const categoryStats = this.calculateCategoryStats(foods);
-      const avgCalories = this.calculateAvgCalories(recipes);
-
-      // 计算每日和每周卡路里
-      const dailyCalories = this.calculateDailyCalories(recipes, startDate, endDate);
-      const weeklyCalories = this.calculateWeeklyCalories(recipes, startDate, endDate);
-
-      // 计算日期范围内的天数
-      const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-
-      // 计算营养均衡情况
-      const nutritionBalance = this.calculateNutritionBalance(recipes, daysDiff);
-
-      // 生成健康建议
-      const tips = this.generateHealthTips(foods, recipes, categoryStats, nutritionBalance);
-
-      // 转换分类统计数据为nutrition-bar组件需要的格式
-      const categoryNutritionData = categoryStats.map(item => ({
-        name: item.category,
-        type: item.category,
-        value: item.count,
-        unit: '个',
-        percentage: item.percentage,
-      }));
-
-      this.setData({
-        reportData: {
-          totalFoods: foods.length,
-          totalRecipes: recipes.length,
-          avgCalories: avgCalories.toFixed(0),
-          wasteCount: expiredFoods.length,
-          categoryStats,
-          tips,
+      const result = await wx.cloud.callFunction({
+        name: 'health-report-statistics',
+        data: {
+          startDate: this.data.startDate,
+          endDate: this.data.endDate,
         },
-        categoryNutritionData: categoryNutritionData,
-        dailyCalories: dailyCalories,
-        weeklyCalories: weeklyCalories,
-        nutritionBalance: nutritionBalance,
+      });
+
+      if (result.result.errCode !== 0) {
+        showToast(result.result.errMsg || '查询失败', 'none');
+        return;
+      }
+
+      const data = result.result.data;
+      
+      this.setData({
+        reportData: data.reportData,
+        categoryNutritionData: data.categoryNutritionData,
+        dailyCalories: data.dailyCalories,
+        weeklyCalories: data.weeklyCalories,
+        nutritionBalance: data.nutritionBalance,
       });
     } catch (err) {
       console.error('查询报告失败:', err);
       showToast('查询失败，请重试', 'none');
     } finally {
       this.setData({ loading: false });
-    }
-  },
-
-  /**
-   * 加载日期范围内的菜品
-   */
-  async loadFoodsInRange(startDate, endDate) {
-    try {
-      const foods = await queryData(
-        dbCollections.foods,
-        {
-          createTime: dbCommand.gte(startDate).and(dbCommand.lte(endDate)),
-        }
-      );
-      return foods;
-    } catch (err) {
-      console.error('加载菜品失败:', err);
-      return [];
-    }
-  },
-
-  /**
-   * 加载日期范围内的食谱
-   */
-  async loadRecipesInRange(startDate, endDate) {
-    try {
-      const recipes = await queryData(
-        dbCollections.recipes,
-        {
-          createTime: dbCommand.gte(startDate).and(dbCommand.lte(endDate)),
-        }
-      );
-      return recipes;
-    } catch (err) {
-      console.error('加载食谱失败:', err);
-      return [];
-    }
-  },
-
-  /**
-   * 加载日期范围内过期的菜品
-   */
-  async loadExpiredFoodsInRange(startDate, endDate) {
-    try {
-      const foods = await queryData(
-        dbCollections.foods,
-        {
-          status: 'expired',
-          updateTime: dbCommand.gte(startDate).and(dbCommand.lte(endDate)),
-        }
-      );
-      return foods;
-    } catch (err) {
-      console.error('加载过期菜品失败:', err);
-      return [];
     }
   },
 

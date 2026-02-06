@@ -265,7 +265,6 @@ Page({
         }
       }
 
-      // 计算状态（根据保质期）
       const expireDate = new Date(this.data.expireDate);
       const now = new Date();
       const daysDiff = Math.floor((expireDate - now) / (1000 * 60 * 60 * 24));
@@ -277,7 +276,6 @@ Page({
         status = 'warning';
       }
 
-      // 保存到数据库
       await addData(dbCollections.foods, {
         userId: await this.getUserId(),
         name: this.data.recognitionResult.name,
@@ -289,10 +287,15 @@ Page({
         isDeleted: false,
       });
 
+      await Promise.all([
+        removeCache('food_count'),
+        removeCache('expiring_count'),
+        removeCache('recent_foods'),
+      ]);
+
       showToast('保存成功', 'success');
       await removeCache('food_count');
 
-      // 延迟返回上一页
       setTimeout(() => {
         wx.navigateBack();
       }, 1500);

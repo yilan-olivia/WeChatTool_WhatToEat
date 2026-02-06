@@ -207,14 +207,21 @@ Page({
     if (!result.confirm) return;
 
     try {
-      // 删除菜品
+      console.log('[food-manage] 开始删除菜品:', food._id);
       await updateData(dbCollections.foods, food._id, { isDeleted: true });
+      console.log('[food-manage] 菜品删除成功，开始清除缓存');
+      
+      await Promise.all([
+        removeCache('food_count'),
+        removeCache('expiring_count'),
+        removeCache('recent_foods'),
+      ]);
+      
+      console.log('[food-manage] 缓存清除完成');
       showSuccess('删除成功');
-      await removeCache('food_count');
-      // 刷新列表
       this.refreshList();
     } catch (err) {
-      console.error('删除菜品失败:', err);
+      console.error('[food-manage] 删除菜品失败:', err);
       showError('删除失败，请重试');
     }
   },

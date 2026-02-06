@@ -5,11 +5,11 @@
     <view class="section-title">选择可用菜品</view>
     <view class="foods-selector">
       <view 
-        class="food-tag {{selectedFoods.includes(item.id) ? 'active' : ''}}"
+        class="food-tag {{selectedFoods.includes(item._id) ? 'active' : ''}}"
         wx:for="{{availableFoods}}" 
-        wx:key="id"
+        wx:key="_id"
         bindtap="toggleFood"
-        data-id="{{item.id}}"
+        data-id="{{item._id}}"
       >
         {{item.name}}
       </view>
@@ -85,3 +85,4 @@
 
 <!-- 加载组件 -->
 <loading show="{{loading}}" text="{{loadingText}}"></loading>
+
