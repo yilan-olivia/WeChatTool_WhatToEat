@@ -110,6 +110,10 @@ Page({
           }
         },
         fail: (err) => {
+          // 用户取消操作时不报错
+          if (err.errMsg && err.errMsg.includes('cancel')) {
+            return;
+          }
           console.error('选择失败:', err);
         }
       });
@@ -130,6 +134,10 @@ Page({
           }
         },
         fail: (err) => {
+          // 用户取消操作时不报错
+          if (err.errMsg && err.errMsg.includes('cancel')) {
+            return;
+          }
           console.error('选择失败:', err);
         }
       });

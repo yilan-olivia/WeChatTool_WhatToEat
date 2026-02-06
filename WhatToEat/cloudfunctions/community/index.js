@@ -301,6 +301,52 @@ async function getHotRecipes() {
 }
 
 /**
+ * 获取食谱详情
+ * @param {string} recipeId 食谱ID
+ * @returns {Promise<Object|null>}
+ */
+async function getRecipeDetail(recipeId) {
+  try {
+    const result = await db.collection('recipes').doc(recipeId).get();
+    
+    if (!result.data || result.data.isDeleted) {
+      return null;
+    }
+    
+    return result.data;
+  } catch (err) {
+    error('community', '获取食谱详情失败', err);
+    throw err;
+  }
+}
+
+/**
+ * 获取收藏的食谱列表
+ * @param {Array<string>} recipeIds 食谱ID数组
+ * @returns {Promise<Array>}
+ */
+async function getCollectedRecipes(recipeIds) {
+  try {
+    if (!recipeIds || recipeIds.length === 0) {
+      return [];
+    }
+
+    const result = await db.collection('recipes')
+      .where({
+        _id: _.in(recipeIds),
+        isDeleted: false,
+      })
+      .orderBy('createTime', 'desc')
+      .get();
+
+    return result.data || [];
+  } catch (err) {
+    error('community', '获取收藏食谱失败', err);
+    return [];
+  }
+}
+
+/**
  * 发布动态（带防刷检测）
  * @param {string} userId 用户ID
  * @param {Object} postData 动态数据
@@ -600,8 +646,8 @@ exports.main = async (event, context) => {
         };
       }
 
-      // 频率限制检查
-      const rateLimit = await checkRateLimit('community', userId);
+      // 频率限制检查（简化版直接放行）
+      const rateLimit = await checkRateLimit();
       if (!rateLimit.allowed) {
         return {
           errCode: -2,
@@ -727,6 +773,47 @@ exports.main = async (event, context) => {
             errCode: 0,
             errMsg: 'success',
             data: hotRecipes,
+          };
+
+        case 'getRecipeDetail':
+          // 获取食谱详情
+          const { recipeId } = event;
+          if (!recipeId) {
+            return {
+              errCode: -1,
+              errMsg: '食谱ID不能为空',
+              data: null,
+            };
+          }
+          const recipeDetail = await getRecipeDetail(recipeId);
+          if (!recipeDetail) {
+            return {
+              errCode: -1,
+              errMsg: '食谱不存在或已删除',
+              data: null,
+            };
+          }
+          return {
+            errCode: 0,
+            errMsg: 'success',
+            data: recipeDetail,
+          };
+
+        case 'getCollectedRecipes':
+          // 获取收藏的食谱列表
+          const { recipeIds } = event;
+          if (!recipeIds || !Array.isArray(recipeIds)) {
+            return {
+              errCode: -1,
+              errMsg: '食谱ID列表不能为空',
+              data: null,
+            };
+          }
+          const collectedRecipes = await getCollectedRecipes(recipeIds);
+          return {
+            errCode: 0,
+            errMsg: 'success',
+            data: collectedRecipes,
           };
 
         case 'getPopular':

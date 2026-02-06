@@ -95,13 +95,26 @@ Page({
 
     try {
       console.log('开始加载食谱详情，ID:', id);
-      const db = wx.cloud.database();
-      const result = await db.collection('recipes').doc(id).get();
+      
+      // 通过云函数获取食谱详情，避免权限问题
+      const result = await wx.cloud.callFunction({
+        name: 'community',
+        data: {
+          action: 'getRecipeDetail',
+          recipeId: id,
+        },
+      });
+
+      if (!result.result || result.result.errCode !== 0) {
+        throw new Error(result.result?.errMsg || '获取食谱详情失败');
+      }
+
+      const recipe = result.result.data;
 
       console.log('数据库查询结果:', result);
 
-      if (!result || !result.data) {
-        console.error('食谱不存在，result:', result);
+      if (!recipe) {
+        console.error('食谱不存在');
         showToast('食谱不存在', 'none');
         setTimeout(() => {
           wx.navigateBack();
@@ -109,7 +122,6 @@ Page({
         return;
       }
 
-      const recipe = result.data;
       console.log('获取到食谱数据:', recipe);
 
       // 检查是否已删除
@@ -161,10 +173,14 @@ Page({
 
       console.log('准备设置页面数据，recipe:', recipe);
 
+      // 格式化类型显示
+      const formattedTypeValue = this.formatTypeValue(recipe.typeCategory, recipe.typeValue);
+
       this.setData({
         recipe: {
           ...recipe,
           createTime,
+          typeValue: formattedTypeValue,
         },
         isAuthor,
         isLiked,
@@ -197,6 +213,27 @@ Page({
     if (!time) return '';
     const date = new Date(time);
     return formatDate(date, 'YYYY-MM-DD HH:mm');
+  },
+
+  /**
+   * 格式化类型值显示
+   */
+  formatTypeValue(typeCategory, typeValue) {
+    if (!typeValue) return '';
+    
+    // 如果是饮食类型，需要将value转换为label
+    if (typeCategory === 'dietType') {
+      const dietTypeMap = {
+        'balanced': '均衡饮食',
+        'vegetarian': '素食',
+        'low_carb': '低碳水',
+        'high_protein': '高蛋白',
+      };
+      return dietTypeMap[typeValue] || typeValue;
+    }
+    
+    // 如果是喜爱分类，直接返回（已经是中文）
+    return typeValue;
   },
 
   /**

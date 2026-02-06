@@ -44,20 +44,26 @@ Page({
           return;
         }
 
-        // 查询收藏的食谱
-        const db = wx.cloud.database();
-        const result = await db.collection('recipes')
-          .where({
-            _id: db.command.in(collectedRecipeIds),
-            isDeleted: false,
-          })
-          .orderBy('createTime', 'desc')
-          .get();
+        // 通过云函数查询收藏的食谱，避免权限问题
+        const result = await wx.cloud.callFunction({
+          name: 'community',
+          data: {
+            action: 'getCollectedRecipes',
+            recipeIds: collectedRecipeIds,
+          },
+        });
 
-        // 格式化时间
-        const formattedRecipes = (result.data || []).map(recipe => ({
+        if (!result.result || result.result.errCode !== 0) {
+          throw new Error(result.result?.errMsg || '获取收藏食谱失败');
+        }
+
+        const recipes = result.result.data || [];
+
+        // 格式化时间和类型显示
+        const formattedRecipes = recipes.map(recipe => ({
           ...recipe,
           createTime: this.formatTime(recipe.createTime),
+          typeValue: this.formatTypeValue(recipe.typeCategory, recipe.typeValue),
         }));
 
         this.setData({ collectedRecipes: formattedRecipes });
@@ -77,6 +83,27 @@ Page({
     if (!time) return '';
     const date = new Date(time);
     return formatDate(date, 'YYYY-MM-DD');
+  },
+
+  /**
+   * 格式化类型值显示
+   */
+  formatTypeValue(typeCategory, typeValue) {
+    if (!typeValue) return '';
+    
+    // 如果是饮食类型，需要将value转换为label
+    if (typeCategory === 'dietType') {
+      const dietTypeMap = {
+        'balanced': '均衡饮食',
+        'vegetarian': '素食',
+        'low_carb': '低碳水',
+        'high_protein': '高蛋白',
+      };
+      return dietTypeMap[typeValue] || typeValue;
+    }
+    
+    // 如果是喜爱分类，直接返回（已经是中文）
+    return typeValue;
   },
 
   /**

@@ -60,10 +60,11 @@ Page({
         this.loadRecipesList(),
       ]);
 
-      // 格式化时间
+      // 格式化时间和类型显示
       const formattedRecipes = listResult.map(recipe => ({
         ...recipe,
         createTime: this.formatTime(recipe.createTime),
+        typeValue: this.formatTypeValue(recipe.typeCategory, recipe.typeValue),
       }));
 
       this.setData({
@@ -96,7 +97,12 @@ Page({
       });
 
       if (result.result && result.result.errCode === 0) {
-        return result.result.data || [];
+        const recipes = result.result.data || [];
+        // 格式化类型显示
+        return recipes.map(recipe => ({
+          ...recipe,
+          typeValue: this.formatTypeValue(recipe.typeCategory, recipe.typeValue),
+        }));
       }
       return [];
     } catch (err) {
@@ -145,6 +151,27 @@ Page({
     if (hours < 24) return `${hours}小时前`;
     if (days < 7) return `${days}天前`;
     return formatDate(date, 'YYYY-MM-DD');
+  },
+
+  /**
+   * 格式化类型值显示
+   */
+  formatTypeValue(typeCategory, typeValue) {
+    if (!typeValue) return '';
+    
+    // 如果是饮食类型，需要将value转换为label
+    if (typeCategory === 'dietType') {
+      const dietTypeMap = {
+        'balanced': '均衡饮食',
+        'vegetarian': '素食',
+        'low_carb': '低碳水',
+        'high_protein': '高蛋白',
+      };
+      return dietTypeMap[typeValue] || typeValue;
+    }
+    
+    // 如果是喜爱分类，直接返回（已经是中文）
+    return typeValue;
   },
 
   /**
